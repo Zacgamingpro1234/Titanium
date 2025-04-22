@@ -3,14 +3,6 @@ A mod that optimizes stuff outside of Minecraft.
 
 ### A rewrite is coming this summer (More info at QA below)
 
-## Will make a wiki for config soon [Wiki (beta)](https://github.com/Zacgamingpro1234/Titaniumod/wiki) This Mod Is In WIP
-
-#### High priority on low-end cpu's might make your screen recording's look laggy with a bit of screen tear!
-
-This mod is still in beta soooo maybe crashes? idk Probably not. Will probably stay on only optimizing Windows 10. (Please check the compatibility chart for info).
-### THE CUSTOM COMMANDS ARE NOT FULLY TESTED
-
-<img src="https://cdn.modrinth.com/data/T61qr8P3/images/d4b691c1b9d06bfeabe1dbcd0c0e0f1bd3b42d80.png" alt="Compatibility Chart" width="500"/>
 <details>
 <summary>QA</summary>
 
