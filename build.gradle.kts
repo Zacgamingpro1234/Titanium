@@ -176,6 +176,9 @@ tasks {
         archiveClassifier.set("dev")
         configurations = listOf(shade, modShade)
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        relocate("oshi", "com.github.zacgamingpro1234.shade.oshi")
+        relocate("com.sun.jna", "com.github.zacgamingpro1234.shade.jna")
+        relocate("org.slf4j", "com.github.zacgamingpro1234.shade.slf4j")
     }
 
     remapJar {
