@@ -5,11 +5,19 @@ import cc.polyfrost.oneconfig.events.event.InitializationEvent;
 import cc.polyfrost.oneconfig.libs.eventbus.Subscribe;
 import cc.polyfrost.oneconfig.utils.Notifications;
 import com.github.zacgamingpro1234.titaniumrewrite.config.TitaniumConfig;
+import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import org.apache.commons.lang3.SystemUtils;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import java.lang.management.ManagementFactory;
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 
 import static com.github.zacgamingpro1234.titaniumrewrite.config.TitaniumConfig.PowerplanDefault;
 
@@ -23,6 +31,7 @@ public class Titaniumod {
     public static boolean isWindows;
     public static boolean containsWin;
     public static String OSis;
+    private static final Logger LOGGER = LogManager.getLogger();
 
     /// /////////////////////////////////////////MISC////////////////////////////////////////
     @Mod.EventHandler
@@ -62,7 +71,9 @@ public class Titaniumod {
             writer.write("Launch PS-UP: " + TitaniumConfig.lPStUP);
             writer.newLine();
             launchPrioritySetter();
-        } catch (IOException ignore) {}
+        } catch (IOException e) {
+            LOGGER.error(e);
+        }
         try {
             // Run PowerShell command to get active GUID
             ProcessBuilder pb = new ProcessBuilder(
@@ -83,7 +94,8 @@ public class Titaniumod {
                     }
                 }
             }
-        } catch (Exception ignore) {
+        } catch (Exception e) {
+            LOGGER.error(e);
         }
 
         if (TitaniumConfig.lCMDtUP) {
@@ -102,7 +114,8 @@ public class Titaniumod {
             writer.newLine();
             writer.write("Launch PS-DOWN: " + TitaniumConfig.lPStDOWN);
             writer.newLine();
-        } catch (IOException ignore) {
+        } catch (IOException e) {
+            LOGGER.error(e);
         }
 
         if (TitaniumConfig.lPStDOWN) {
@@ -129,7 +142,8 @@ public class Titaniumod {
             }
 
             Process process = processBuilder.start();
-        } catch (IOException ignored) {
+        } catch (IOException e) {
+            LOGGER.error(e);
         }
     }
 
@@ -149,7 +163,8 @@ public class Titaniumod {
             }
 
             Process process = processBuilder.start();
-        } catch (IOException ignored) {
+        } catch (IOException e) {
+            LOGGER.error(e);
         }
     }
 
@@ -168,7 +183,8 @@ public class Titaniumod {
             }
 
             Process process = processBuilder.start();
-        } catch (IOException ignore) {
+        } catch (IOException e) {
+            LOGGER.error(e);
         }
     }
 
@@ -187,7 +203,8 @@ public class Titaniumod {
             }
 
             Process process = processBuilder.start();
-        } catch (IOException ignore) {
+        } catch (IOException e) {
+            LOGGER.error(e);
         }
     }
 
@@ -220,7 +237,8 @@ public class Titaniumod {
             ProcessBuilder processBuilder = new ProcessBuilder("cmd", "/c", "wmic process where ProcessId=" + processID + " call setpriority " + Priority);
             Process process = processBuilder.start();
             Notifications.INSTANCE.send("Titanium Rewrite", "Priority "+Priority+" applied to ProcessID "+processID);
-        } catch (IOException ignore) {
+        } catch (IOException e) {
+            LOGGER.error(e);
         }
     }
 
@@ -239,9 +257,8 @@ public class Titaniumod {
                 Process process2 = processBuilder2.start();
                 process2.waitFor();
                 Notifications.INSTANCE.send("Titanium Rewrite", "The Ulitmate Powerplan Is Applied");
-            } catch (IOException ignore) {
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+            } catch (IOException | InterruptedException e) {
+                LOGGER.error(e);
             }
         }).start();
     }
@@ -258,9 +275,8 @@ public class Titaniumod {
                 process.waitFor();
                 Process process2 = processBuilder2.start();
                 Notifications.INSTANCE.send("Titanium Rewrite", "Powerplan reverted back to original state");
-            } catch (IOException ignore) {
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
+            } catch (IOException | InterruptedException e) {
+                LOGGER.error(e);
             }
         }).start();
     }
@@ -272,8 +288,70 @@ public class Titaniumod {
             ProcessBuilder processBuilder = new ProcessBuilder("powershell", "-Command", "iwr -useb https://christitus.com/win | iex");
             Process process = processBuilder.start();
             Notifications.INSTANCE.send("Titanium Rewrite", "Launching The Ultimate Windows Utility by Chris Titus Tech, Please Wait and Accept The UAC");
-        } catch (IOException ignore) {
+        } catch (IOException e) {
+            LOGGER.error(e);
         }
     }
 
+    /// /////////////////////////////////////////LAUNCH ADMIN APP////////////////////////////////////////
+
+    private static void LaunchIt(String fulldir){
+        try {
+            ProcessBuilder processBuilder = new ProcessBuilder("powershell", "-WindowStyle", "Hidden", "-Command", "Start-Process", "-FilePath", fulldir, "-WindowStyle", "Hidden");
+            Process process = processBuilder.start();
+        } catch (IOException e) {
+            LOGGER.error(e);
+        }
+    }
+
+    public static void unzip(String zipFile, String destFolder) throws IOException {
+        try (InputStream resourceStream = Titaniumod.class.getResourceAsStream(zipFile)) {
+            if (resourceStream == null) {
+                LOGGER.error("Could not find resource: {}", zipFile);
+            }
+            try (ZipInputStream zis = new ZipInputStream((resourceStream))) {
+                ZipEntry entry;
+                byte[] buffer = new byte[1024];
+                while ((entry = zis.getNextEntry()) != null) {
+                    File newFile = new File(destFolder + File.separator + entry.getName());
+                    if (entry.isDirectory()) {
+                        if (!newFile.mkdirs()) {
+                            LOGGER.error("Failed to create directory: {}", newFile.getAbsolutePath());
+                        }
+                    } else {
+                        File parentDir = new File(newFile.getParent());
+                        if (!parentDir.exists() && !parentDir.mkdirs()) {
+                            LOGGER.error("Failed to create parent directory: {}", parentDir.getAbsolutePath());
+                        }
+
+                        try (FileOutputStream fos = new FileOutputStream(newFile)) {
+                            int length;
+                            while ((length = zis.read(buffer)) > 0) {
+                                fos.write(buffer, 0, length);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    public static void LaunchAsAdmin() {
+        new Thread(() -> {
+            String mcDir = Minecraft.getMinecraft().mcDataDir.toString();
+            String dir = mcDir + File.separator + "OHM";
+            String fulldir = dir + File.separator + "OpenHardwareMonitor.exe";
+            if (!Files.exists(Paths.get(fulldir))) {
+                try {
+                    String zipFileName = "/third-party/OpenHardwareMonitor.zip";
+                    unzip(zipFileName, dir);
+                    LaunchIt(fulldir);
+                } catch (IOException e) {
+                    LOGGER.error(e);
+                }
+            } else {
+                LaunchIt(fulldir);
+            }
+        }).start();
+    }
 }

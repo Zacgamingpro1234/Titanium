@@ -94,13 +94,21 @@ public class TitaniumConfig extends Config {
 
 ////////////////////////////////////////////ADMIN////////////////////////////////////////
 
+@Info(
+        text = "This App Allows This Mod To Access Certain Features Like Temps",
+        type = InfoType.INFO, // Types are: INFO, WARNING, ERROR, SUCCESS
+        category = "Admin",
+        size = 5
+)
+public static boolean ignored9; // Useless
+
 @Button(
         name = "Launch The App",    // name beside the button
         size = OptionSize.DUAL,
         category = "Admin",
         text = "Launch"        // text on the button itself
 )
-Runnable runnable5 = Titaniumod::CTwinUtil;
+Runnable runnable5 = Titaniumod::LaunchAsAdmin;
 
 ////////////////////////////////////////////HUD////////////////////////////////////////
 
