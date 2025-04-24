@@ -289,7 +289,6 @@ public static String PowerplanDefault = "717AD10b-71F4-4A5E-171F-4A5E71F4A5E1";
         addDependency("PowerplanDefault", "Unchangeable", () -> (false));
         addDependency("runnable2", "Is Already Enabled", () -> (Titaniumod.Enableable));
         addDependency("runnable3", "Is Already Enabled", () -> (!Titaniumod.Enableable));
-       // addDependency("hud2", "Unreleased", () -> (false));
     }
 
 }
