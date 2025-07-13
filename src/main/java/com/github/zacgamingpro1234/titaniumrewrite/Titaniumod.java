@@ -304,10 +304,11 @@ public class Titaniumod {
         }
     }
 
-    public static void unzip(String zipFile, String destFolder) throws IOException {
+    public static boolean unzip(String zipFile, String destFolder) throws IOException {
         try (InputStream resourceStream = Titaniumod.class.getResourceAsStream(zipFile)) {
             if (resourceStream == null) {
                 LOGGER.error("Could not find resource: {}", zipFile);
+                return false;
             }
             try (ZipInputStream zis = new ZipInputStream((resourceStream))) {
                 ZipEntry entry;
@@ -317,11 +318,13 @@ public class Titaniumod {
                     if (entry.isDirectory()) {
                         if (!newFile.mkdirs()) {
                             LOGGER.error("Failed to create directory: {}", newFile.getAbsolutePath());
+                            return false;
                         }
                     } else {
                         File parentDir = new File(newFile.getParent());
                         if (!parentDir.exists() && !parentDir.mkdirs()) {
                             LOGGER.error("Failed to create parent directory: {}", parentDir.getAbsolutePath());
+                            return false;
                         }
 
                         try (FileOutputStream fos = new FileOutputStream(newFile)) {
@@ -334,6 +337,7 @@ public class Titaniumod {
                 }
             }
         }
+        return true;
     }
 
     public static void LaunchAsAdmin() {
@@ -344,8 +348,11 @@ public class Titaniumod {
             if (!Files.exists(Paths.get(fulldir))) {
                 try {
                     String zipFileName = "/third-party/OpenHardwareMonitor.zip";
-                    unzip(zipFileName, dir);
-                    LaunchIt(fulldir);
+                    if (unzip(zipFileName, dir)) {
+                        LaunchIt(fulldir);
+                    }else{
+                        LOGGER.error("Failed To Launch OHM Due To Extraction Error");
+                    }
                 } catch (IOException e) {
                     LOGGER.error(e);
                 }

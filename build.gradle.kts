@@ -93,8 +93,8 @@ dependencies {
     modCompileOnly("cc.polyfrost:oneconfig-$platform:0.2.2-alpha+")
 
     //Adds Oshi/jLibre
-    implementation("com.github.oshi:oshi-core:6.8.1")
-    shade("com.github.oshi:oshi-core:6.8.1")
+    implementation("com.github.oshi:oshi-core:6.8.2")
+    shade("com.github.oshi:oshi-core:6.8.2")
     implementation("io.github.pandalxb:jLibreHardwareMonitor:1.0.5")
     shade("io.github.pandalxb:jLibreHardwareMonitor:1.0.5")
     implementation("net.java.dev.jna:jna:5.17.0")
