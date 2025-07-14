@@ -8,14 +8,16 @@ import com.github.zacgamingpro1234.titaniumrewrite.config.TitaniumConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import org.apache.commons.lang3.SystemUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import oshi.SystemInfo;
+import oshi.software.os.OperatingSystem;
 
 import java.lang.management.ManagementFactory;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -29,17 +31,20 @@ public class Titaniumod {
     public static Boolean Enableable = false;
     public TitaniumConfig config;
     public static boolean isWindows;
-    public static boolean containsWin;
-    public static String OSis;
-    private static final Logger LOGGER = LogManager.getLogger();
+    public static OperatingSystem os;
+    private static final Logger LOGGER = LogManager.getLogger("titaniumrewrite");
+    SystemInfo si = new SystemInfo();
 
     /// /////////////////////////////////////////MISC////////////////////////////////////////
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) throws IOException {
-        OSis = System.getProperty("os.name");
-        containsWin = OSis.toLowerCase().contains("win");
-        //Checks If We Are Using Windows using both sysutil and osname
-        isWindows = SystemUtils.IS_OS_WINDOWS || System.getProperty("os.name").toLowerCase().contains("win");
+        //Checks If We Are Using Windows using Oshi OS Family
+        os = si.getOperatingSystem();
+        LOGGER.info(os.toString());
+        String ostype = os.getFamily();
+        if (Objects.equals(ostype, "Windows")) {
+            isWindows = true;
+        }
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             if (isWindows) { //If We Have Windows, Continue With The Code
                 launchVerifiedDown();
@@ -48,7 +53,7 @@ public class Titaniumod {
             }
         })); //Run launchVerifiedDown When The Game Closes
         BufferedWriter writer = new BufferedWriter(new FileWriter("mod_config.log", true));
-        writer.write("Is Windows: " + isWindows);
+        writer.write("Is Windows: " + os);
         writer.newLine();
         writer.close();
         EventManager.INSTANCE.register(this); //Registers Us To The EventBus

@@ -23,7 +23,7 @@ public class TitaniumConfig extends Config {
             text = "Show"        // text on the button itself
     )
     Runnable runnable = () -> {    // using a lambda to create the runnable interface.
-        Notifications.INSTANCE.send("Titanium Rewrite","Your Current OS is " + Titaniumod.OSis);
+        Notifications.INSTANCE.send("Titanium Rewrite","Your Current OS is " + Titaniumod.os.toString());
     };
 
     @Dropdown(
