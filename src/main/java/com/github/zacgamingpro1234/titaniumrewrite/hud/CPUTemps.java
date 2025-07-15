@@ -6,6 +6,7 @@ import cc.polyfrost.oneconfig.utils.Notifications;
 import oshi.SystemInfo;
 import oshi.hardware.HardwareAbstractionLayer;
 import oshi.hardware.Sensors;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -16,6 +17,7 @@ public class CPUTemps extends SingleTextHud {
     private static final SystemInfo SYSTEM_INFO = new SystemInfo();
     private static final HardwareAbstractionLayer HARDWARE = SYSTEM_INFO.getHardware();
     private static final Sensors SENSORS = HARDWARE.getSensors();
+    private final ExecutorService executor = Executors.newSingleThreadExecutor();
     private volatile String cpuTempString;
     public static final Icon FLAME_ICON = new Icon("/Assets/flame.svg");
 
@@ -37,10 +39,10 @@ public class CPUTemps extends SingleTextHud {
     @Override
     public String getText(boolean example) {
         if (example) return "69.9°C";
-        new Thread(() -> {
+        executor.execute(() -> {
             float temp = (float) SENSORS.getCpuTemperature();
             cpuTempString = String.format("%.1f°C", temp);
-        }).start();
+        });
         return cpuTempString;
     }
 }
