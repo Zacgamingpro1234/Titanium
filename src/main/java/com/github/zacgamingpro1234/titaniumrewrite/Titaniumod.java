@@ -46,6 +46,7 @@ public class Titaniumod {
             isWindows = true;
         }
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            ThreadManager.shutdown();
             if (isWindows) { //If We Have Windows, Continue With The Code
                 launchVerifiedDown();
             } else if (TitaniumConfig.BypassOS) { //Bypass Enabled? Dw I got u

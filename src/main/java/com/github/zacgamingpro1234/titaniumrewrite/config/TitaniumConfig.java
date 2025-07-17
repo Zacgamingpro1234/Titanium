@@ -92,12 +92,24 @@ public class TitaniumConfig extends Config {
     )
     public static float templimit = 85f; // default value
 
-////////////////////////////////////////////ADMIN////////////////////////////////////////
+    @Switch(
+            name = "Warn via Notification if certain GPU temps are reached",
+            size = 2
+    )
+    public static boolean GPUwarn = true;
+
+    @Slider(
+            name = "Temperature Limit",
+            min = 50f, max = 110f
+    )
+    public static float templimitGPU = 85f; // default value
+
+////////////////////////////////////////////HUD////////////////////////////////////////
 
 @Info(
-        text = "This App Allows This Mod To Access Certain Features Like Temps",
-        type = InfoType.INFO, // Types are: INFO, WARNING, ERROR, SUCCESS
-        category = "Admin",
+        text = "This App Allows This Mod To Access CPU Temps, You can Also Access CPU Temps by Launching MC As Administrator",
+        type = InfoType.WARNING, // Types are: INFO, WARNING, ERROR, SUCCESS
+        category = "HUD",
         size = 5
 )
 public static boolean ignored9; // Useless
@@ -105,20 +117,10 @@ public static boolean ignored9; // Useless
 @Button(
         name = "Launch The App",    // name beside the button
         size = OptionSize.DUAL,
-        category = "Admin",
+        category = "HUD",
         text = "Launch"        // text on the button itself
 )
 Runnable runnable5 = Titaniumod::LaunchAsAdmin;
-
-////////////////////////////////////////////HUD////////////////////////////////////////
-
-    @Info(
-        text = "You Need To Enabled Admin Mode For These To Work!",
-        category = "HUD",
-        type = InfoType.ERROR, // Types are: INFO, WARNING, ERROR, SUCCESS
-        size = 5
-    )
-    public static boolean ignored8; // Useless
 
     @HUD(
             name = "CPU Temps",
