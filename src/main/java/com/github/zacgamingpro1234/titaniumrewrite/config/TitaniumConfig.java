@@ -90,7 +90,7 @@ public class TitaniumConfig extends Config {
             name = "Temperature Limit",
             min = 50f, max = 110f
     )
-    public static float templimit = 85f; // default value
+    public static float templimitCPU = 85f; // default value
 
     @Switch(
             name = "Warn via Notification if certain GPU temps are reached",
