@@ -21,6 +21,15 @@ jobs:
       - name: Build project
         run: ./gradlew build
 
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ github.event.repository.name }}-jar
+          path: |
+            build/libs/*.jar
+            versions/*/build/libs/*.jar
+          if-no-files-found: error
+
       - name: Extract mod properties
         id: mod_props
         run: |
@@ -42,12 +51,3 @@ jobs:
             new_name="${{ steps.mod_props.outputs.mod_archives_name }}-1.8.9-forge-${{ steps.mod_props.outputs.mod_version }}.jar"
             mv "$file" "$base_dir/$new_name"
           done
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ github.event.repository.name }}-jar
-          path: |
-            build/libs/*.jar
-            versions/*/build/libs/*.jar
-          if-no-files-found: error
