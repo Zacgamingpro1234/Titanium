@@ -29,8 +29,8 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ${mod_archives_name}-${project.platform.mcVersionStr}-${mod_version}
+        name: ${{mod_archives_name}}-{{$platform}}
         path: |
-         build/libs/*.jar
-         versions/*/build/libs/*.jar
+          build/libs/*.jar
+          versions/*/build/libs/*.jar
         if-no-files-found: error
