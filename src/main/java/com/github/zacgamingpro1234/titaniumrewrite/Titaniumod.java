@@ -25,9 +25,9 @@ import static com.github.zacgamingpro1234.titaniumrewrite.config.TitaniumConfig.
 
 @Mod(modid = Titaniumod.MODID, name = Titaniumod.NAME, version = Titaniumod.VERSION)
 public class Titaniumod {
-    public static final String MODID = "titaniumrewrite";
-    public static final String NAME = "Titanium Rewrite";
-    public static final String VERSION = "V0.3";
+    public static final String MODID = "@ID@";
+    public static final String NAME = "@NAME@";
+    public static final String VERSION = "@VER@";
     public static Boolean Enableable = false;
     public TitaniumConfig config;
     public static boolean isWindows;
