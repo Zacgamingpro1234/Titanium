@@ -29,8 +29,8 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ github.event.repository.name }}-jar
+        name: ${{ github.event.repository.name }}-${{ matrix.mc }}-${{ matrix.loader }}-${{ steps.version.outputs.MOD_VERSION }}
         path: |
-          build/libs/*.jar
-          versions/*/build/libs/*.jar
+         build/libs/*.jar
+         versions/*/build/libs/*.jar
         if-no-files-found: error
