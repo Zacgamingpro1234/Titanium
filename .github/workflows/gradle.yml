@@ -29,7 +29,7 @@ jobs:
     - name: Upload Artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ github.event.repository.name }}-${{ matrix.mc }}-${{ matrix.loader }}-${{ steps.version.outputs.MOD_VERSION }}
+        name: ${mod_archives_name}-${project.platform.mcVersionStr}-${mod_version}
         path: |
          build/libs/*.jar
          versions/*/build/libs/*.jar
