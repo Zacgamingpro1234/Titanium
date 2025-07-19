@@ -25,7 +25,7 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties', '**/build.gradle.kts', '**/settings.gradle.kts') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
 
@@ -36,12 +36,10 @@ jobs:
         run: |
           cd versions/1.8.9-forge/build/libs/
           for jar in *.jar; do
-            echo "Uploading $jar as an artifact..."
-            # Use the filename without extension as the artifact name
-            artifact_name="${jar%.*}"
-            # Use the GitHub Actions built-in artifact upload functionality
-            echo "::set-output name=artifact_name::$artifact_name"
-            echo "::set-output name=jar_path::$jar"
+            echo "Uploading $jar..."
+            # Use the modern GITHUB_OUTPUT method instead of set-output
+            echo "artifact_name=${jar%.*}" >> $GITHUB_OUTPUT
+            echo "jar_path=$jar" >> $GITHUB_OUTPUT
           done
         id: jar_upload
 
@@ -50,3 +48,4 @@ jobs:
         with:
           name: ${{ steps.jar_upload.outputs.artifact_name }}
           path: versions/1.8.9-forge/build/libs/${{ steps.jar_upload.outputs.jar_path }}
+          if-no-files-found: error
