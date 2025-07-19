@@ -2,9 +2,9 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
   build:
@@ -32,20 +32,22 @@ jobs:
       - name: Build project
         run: ./gradlew build --no-daemon
 
-      - name: Upload JARs as separate artifacts
+      - name: Find and upload JARs
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           cd versions/1.8.9-forge/build/libs/
-          for jar in *.jar; do
+          jar_files=(*.jar)
+          echo "Found ${#jar_files[@]} JAR files"
+          
+          for jar in "${jar_files[@]}"; do
             echo "Uploading $jar..."
-            # Use the modern GITHUB_OUTPUT method instead of set-output
-            echo "artifact_name=${jar%.*}" >> $GITHUB_OUTPUT
-            echo "jar_path=$jar" >> $GITHUB_OUTPUT
+            artifact_name="${jar%.*}"
+            echo "::group::Uploading $artifact_name"
+          
+            # Use the GitHub CLI to upload as artifact
+            gh run upload "$jar" --name "$artifact_name" || \
+            echo "::warning::Failed to upload $jar"
+          
+            echo "::endgroup::"
           done
-        id: jar_upload
-
-      - name: Upload Each JAR
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ steps.jar_upload.outputs.artifact_name }}
-          path: versions/1.8.9-forge/build/libs/${{ steps.jar_upload.outputs.jar_path }}
-          if-no-files-found: error
