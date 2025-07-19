@@ -19,12 +19,27 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build project
-        run: ./gradlew build
-
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v4
+      - name: Cache Gradle
+        uses: actions/cache@v4
         with:
           path: |
-            versions/1.8.9-forge/build/libs/*.jar
-          if-no-files-found: error
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Build project
+        run: ./gradlew build --no-daemon
+
+      - name: Upload JARs as separate artifacts
+        run: |
+          cd versions/1.8.9-forge/build/libs/
+          for jar in *.jar; do
+            echo "Uploading $jar as an artifact..."
+            # Use a unique name for each artifact (e.g., based on filename)
+            artifact_name="${jar%.*}"  # Remove .jar extension
+            gh action-artifact upload "$jar" --name "$artifact_name"
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
