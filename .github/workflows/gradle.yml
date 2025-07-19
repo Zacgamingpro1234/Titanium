@@ -42,7 +42,8 @@ jobs:
     outputs:
       jar-array: ${{ steps.set-jars.outputs.jar-array }}
     steps:
-      - uses: actions/download-artifact@v4
+      - name: Download built-jars artifact
+        uses: actions/download-artifact@v4
         with:
           name: built-jars
           path: libs
@@ -51,17 +52,24 @@ jobs:
         id: set-jars
         run: |
           cd libs
+          # collect all .jar files
           jars=( *.jar )
           if [ "${#jars[@]}" -ne 2 ]; then
             echo "❌ Expected 2 JARs but found ${#jars[@]}" >&2
             exit 1
           fi
-          quoted=()
+
+          # build comma-separated, quoted list: "A.jar","B.jar"
+          items=""
           for f in "${jars[@]}"; do
-            quoted+=( "\"$f\"" )
+            items="${items}\"${f}\","
           done
-          json="[${quoted[*]}]"
-          echo "jar-array=$json" >> "$GITHUB_OUTPUT"
+          items="${items%,}"        # remove trailing comma
+
+          # wrap and export as JSON array: ["A.jar","B.jar"]
+          json="[${items}]"
+          echo "jar-array=${json}" >> "$GITHUB_OUTPUT"
+  
 
   # 3. Matrix over the two filenames and upload individually
   upload-individual:
