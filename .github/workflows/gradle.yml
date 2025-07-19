@@ -5,6 +5,7 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -21,26 +22,9 @@ jobs:
       - name: Build project
         run: ./gradlew build
 
-      - name: Extract mod properties
-        id: mod_props
-        run: |
-          MOD_NAME=$(grep '^mod_name=' gradle.properties | cut -d'=' -f2-)
-          MOD_ID=$(grep '^mod_id=' gradle.properties | cut -d'=' -f2-)
-          MOD_VERSION=$(grep '^mod_version=' gradle.properties | cut -d'=' -f2-)
-          MOD_ARCHIVES_NAME=$(grep '^mod_archives_name=' gradle.properties | cut -d'=' -f2-)
-          base_dir=$(dirname "$file")
-          new_name="${{ steps.mod_props.outputs.mod_archives_name }}-1.8.9-forge-${{ steps.mod_props.outputs.mod_version }}.jar"
-
-          echo "mod_name=$MOD_NAME" >> $GITHUB_OUTPUT
-          echo "mod_id=$MOD_ID" >> $GITHUB_OUTPUT
-          echo "mod_version=$MOD_VERSION" >> $GITHUB_OUTPUT
-          echo "mod_archives_name=$MOD_ARCHIVES_NAME" >> $GITHUB_OUTPUT
-
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: $new_name
           path: |
-            build/libs/*.jar
-            versions/*/build/libs/*.jar
+            versions/1.8.9-forge/build/libs/*.jar
           if-no-files-found: error
