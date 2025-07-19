@@ -2,11 +2,12 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: ["main"]
+    branches: [ main ]
   pull_request:
-    branches: ["main"]
+    branches: [ main ]
 
 jobs:
+  # 1. Build and upload both JARs as a single "built-jars" artifact
   build:
     runs-on: ubuntu-latest
     steps:
@@ -25,29 +26,63 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties', '**/build.gradle.kts', '**/settings.gradle.kts') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties', '**/*.gradle*', '**/*.kts') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
 
       - name: Build project
         run: ./gradlew build --no-daemon
 
-      - name: Find and upload JARs
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Upload all JARs together
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-jars
+          path: versions/1.8.9-forge/build/libs/*.jar
+
+  # 2. Download the grouped artifact and list exactly 2 JARs
+  find-jars:
+    needs: build
+    runs-on: ubuntu-latest
+    outputs:
+      jar-array: ${{ steps.set-jars.outputs.jar-array }}
+    steps:
+      - name: Download built-jars artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: built-jars
+          path: libs
+
+      - name: Discover and export JAR filenames
+        id: set-jars
         run: |
-          cd versions/1.8.9-forge/build/libs/
-          jar_files=(*.jar)
-          echo "Found ${#jar_files[@]} JAR files"
-          
-          for jar in "${jar_files[@]}"; do
-            echo "Uploading $jar..."
-            artifact_name="${jar%.*}"
-            echo "::group::Uploading $artifact_name"
-          
-            # Use the GitHub CLI to upload as artifact
-            gh run upload "$jar" --name "$artifact_name" || \
-            echo "::warning::Failed to upload $jar"
-          
-            echo "::endgroup::"
-          done
+          cd libs
+          # Gather all *.jar into bash array
+          jars=( *.jar )
+          count=${#jars[@]}
+          if [ "$count" -ne 2 ]; then
+            echo "❌ Expected 2 JARs but found $count" >&2
+            exit 1
+          fi
+          # Build JSON array: ["a.jar","b.jar"]
+          printf -v json '["%s"]' "$(IFS='","'; echo "${jars[*]}")"
+          echo "jar-array=$json" >> $GITHUB_OUTPUT
+
+  # 3. Re-download and upload each JAR as its own artifact
+  upload-individual:
+    needs: find-jars
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        jar: ${{ fromJson(needs.find-jars.outputs.jar-array) }}
+    steps:
+      - name: Download built-jars artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: built-jars
+          path: libs
+
+      - name: Upload ${{ matrix.jar }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.jar }}
+          path: libs/${{ matrix.jar }}
