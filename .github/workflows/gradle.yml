@@ -37,9 +37,16 @@ jobs:
           cd versions/1.8.9-forge/build/libs/
           for jar in *.jar; do
             echo "Uploading $jar as an artifact..."
-            # Use a unique name for each artifact (e.g., based on filename)
-            artifact_name="${jar%.*}"  # Remove .jar extension
-            gh action-artifact upload "$jar" --name "$artifact_name"
+            # Use the filename without extension as the artifact name
+            artifact_name="${jar%.*}"
+            # Use the GitHub Actions built-in artifact upload functionality
+            echo "::set-output name=artifact_name::$artifact_name"
+            echo "::set-output name=jar_path::$jar"
           done
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: jar_upload
+
+      - name: Upload Each JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.jar_upload.outputs.artifact_name }}
+          path: versions/1.8.9-forge/build/libs/${{ steps.jar_upload.outputs.jar_path }}
