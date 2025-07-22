@@ -27,11 +27,12 @@ public class BatteryLife extends SingleTextHud {
     public static final Icon BATTERY_ICON = new Icon("/Assets/battery-warning.svg");
     private static final Logger LOGGER = LogManager.getLogger("titaniumrewrite");
     private static volatile double percent = Double.NaN;
-    private static volatile String percentString = "N/A";
+    private static volatile String percentString = "No Battery Detected";
     public static volatile PowerSource batry;
     private static boolean hi = true;
     private static volatile OneColor clr;
     public static volatile boolean charging;
+    static volatile boolean hi2;
     @Number(
             name = "Decimal Accuracy",    // name of the component
             min = 0, max = 6,        // min and max values (anything above/below is set to the max/min
@@ -97,6 +98,7 @@ public class BatteryLife extends SingleTextHud {
         executor.scheduleAtFixedRate(() -> {
             if (Batterywarn) {
                 hi = true;
+                hi2 = true;
                 UpdLife();
                 try {
                     boolean updated = tempUpdateLatch.await(5, TimeUnit.SECONDS);
@@ -143,7 +145,9 @@ public class BatteryLife extends SingleTextHud {
         if (!(clr == null)){
             color = clr;
         }else{
-        LOGGER.warn("No Colour Found");
+            if (hi2) {
+                LOGGER.warn("No Colour Found");
+            }
         }
         TextRenderer.drawScaledString(line, x, y, color.getRGB(), TextRenderer.TextType.toType(textType), scale);
     }
