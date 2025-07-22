@@ -8,6 +8,7 @@ import cc.polyfrost.oneconfig.utils.Notifications;
 import cc.polyfrost.oneconfig.config.data.Mod;
 import cc.polyfrost.oneconfig.config.data.ModType;
 import com.github.zacgamingpro1234.titaniumrewrite.Titaniumod;
+import com.github.zacgamingpro1234.titaniumrewrite.hud.BatteryLife;
 import com.github.zacgamingpro1234.titaniumrewrite.hud.CPUTemps;
 import com.github.zacgamingpro1234.titaniumrewrite.hud.GPUTemps;
 
@@ -84,11 +85,11 @@ public class TitaniumConfig extends Config {
             name = "Warn via Notification if certain CPU temps are reached",
             size = 2
     )
-    public static boolean CPUwarn = true;
+    public static boolean CPUwarn = false;
 
     @Slider(
             name = "Temperature Limit",
-            min = 50f, max = 110f
+            min = 40f, max = 110f
     )
     public static float templimitCPU = 85f; // default value
 
@@ -100,9 +101,21 @@ public class TitaniumConfig extends Config {
 
     @Slider(
             name = "Temperature Limit",
-            min = 50f, max = 110f
+            min = 40f, max = 110f
     )
     public static float templimitGPU = 85f; // default value
+
+    @Switch(
+            name = "Warn via Notification if the battery is lower than a certain percent",
+            size = 2
+    )
+    public static boolean Batterywarn = false;
+
+    @Slider(
+            name = "Battery Percent Limit",
+            min = .01f, max = 100f
+    )
+    public static float percentMinimum = 15f; // default value
 
 ////////////////////////////////////////////HUD////////////////////////////////////////
 
@@ -133,6 +146,12 @@ Runnable runnable5 = Titaniumod::LaunchAsAdmin;
             category = "HUD"
     )
     public GPUTemps hud2 = new GPUTemps();
+
+    @HUD(
+            name = "Battery Percent",
+            category = "HUD"
+    )
+    public BatteryLife hud3 = new BatteryLife();
 
 ////////////////////////////////////////////CMD////////////////////////////////////////
 
