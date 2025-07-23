@@ -4,7 +4,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public final class ThreadManager {
-    private static final ExecutorService GLOBAL_THREAD_POOL = Executors.newFixedThreadPool(8);
+    private static final ExecutorService GLOBAL_THREAD_POOL = Executors.newFixedThreadPool(12);
     private ThreadManager() {}
 
     public static void execute(Runnable task) {
