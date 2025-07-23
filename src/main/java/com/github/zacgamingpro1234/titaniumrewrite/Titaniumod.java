@@ -8,11 +8,7 @@ import com.github.zacgamingpro1234.titaniumrewrite.config.TitaniumConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import oshi.SystemInfo;
 import oshi.software.os.OperatingSystem;
-
 import java.lang.management.ManagementFactory;
 import java.io.*;
 import java.nio.file.Files;
@@ -20,6 +16,7 @@ import java.nio.file.Paths;
 import java.util.Objects;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import static com.github.zacgamingpro1234.titaniumrewrite.SharedResources.*;
 
 import static com.github.zacgamingpro1234.titaniumrewrite.config.TitaniumConfig.PowerplanDefault;
 
@@ -32,14 +29,12 @@ public class Titaniumod {
     public TitaniumConfig config;
     public static boolean isWindows;
     public static OperatingSystem os;
-    private static final Logger LOGGER = LogManager.getLogger("titaniumrewrite");
-    SystemInfo si = new SystemInfo();
 
     /// /////////////////////////////////////////MISC////////////////////////////////////////
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) throws IOException {
         //Checks If We Are Using Windows using Oshi OS Family
-        os = si.getOperatingSystem();
+        os = SYSTEM_INFO.getOperatingSystem();
         LOGGER.info(os.toString());
         String ostype = os.getFamily();
         if (Objects.equals(ostype, "Windows")) {
@@ -63,6 +58,7 @@ public class Titaniumod {
     @Subscribe
     public void onInit(InitializationEvent event) {
         config = new TitaniumConfig(); //Makes The Config Work In-Game
+        executorrepeat();
         if (isWindows) { //If We Have Windows, Continue With The Code
             launchVerifiedUp();
         } else if (TitaniumConfig.BypassOS) { //Bypass Enabled? Dw I got u

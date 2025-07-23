@@ -5,37 +5,19 @@ import cc.polyfrost.oneconfig.config.annotations.Number;
 import cc.polyfrost.oneconfig.config.core.OneColor;
 import cc.polyfrost.oneconfig.hud.SingleTextHud;
 import cc.polyfrost.oneconfig.renderer.TextRenderer;
-import cc.polyfrost.oneconfig.renderer.asset.Icon;
-import cc.polyfrost.oneconfig.utils.Notifications;
 import com.github.zacgamingpro1234.titaniumrewrite.ThreadManager;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import oshi.SystemInfo;
-import oshi.hardware.HardwareAbstractionLayer;
-import oshi.hardware.Sensors;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import static com.github.zacgamingpro1234.titaniumrewrite.config.TitaniumConfig.CPUwarn;
-import static com.github.zacgamingpro1234.titaniumrewrite.config.TitaniumConfig.templimitCPU;
+import static com.github.zacgamingpro1234.titaniumrewrite.SharedResources.*;
 
 public class CPUTemps extends SingleTextHud {
-    private static final SystemInfo SYSTEM_INFO = new SystemInfo();
-    private static final HardwareAbstractionLayer HARDWARE = SYSTEM_INFO.getHardware();
-    private static final Sensors SENSORS = HARDWARE.getSensors();
-    private static final CountDownLatch tempUpdateLatch = new CountDownLatch(1);
-    public static final Icon FLAME_ICON = new Icon("/Assets/flame.svg");
-    private static final Logger LOGGER = LogManager.getLogger("titaniumrewrite");
-    private static volatile double temp = Double.NaN;
+    public static volatile double tempCPU = Double.NaN;
     private static volatile String cpuTempString = "N/A";
-    private static volatile OneColor clr;
     @Number(
             name = "Decimal Accuracy",    // name of the component
             min = 0, max = 6,        // min and max values (anything above/below is set to the max/min
             step = 1        // each time the arrow is clicked it will increase/decrease by this amount
     )
-    public static int num = 2; // default value
+    public static int num = 0; // default value
     @Color(
             name = "Default Color"
     )
@@ -51,12 +33,12 @@ public class CPUTemps extends SingleTextHud {
     )
     public static float num2 = 85; // default value
 
-    private static void UpdTemp() {
+    public static void UpdTempCPU() {
         try {
             ThreadManager.execute(() -> {
                 try {
-                    temp = SENSORS.getCpuTemperature();
-                    cpuTempString = String.format(("%." + num + "f°C"), temp);
+                    tempCPU = SENSORS.getCpuTemperature();
+                    cpuTempString = String.format(("%." + num + "f°C"), tempCPU);
                     tempUpdateLatch.countDown();
                 } catch (Exception e) {
                     LOGGER.warn(e);
@@ -69,54 +51,34 @@ public class CPUTemps extends SingleTextHud {
 
     public CPUTemps() {
         super("CPU Temps", false);
-        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        Runtime.getRuntime().addShutdownHook(new Thread(executor::shutdown));
-        executor.scheduleAtFixedRate(() -> {
-            if(CPUwarn) {
-                UpdTemp();
-                try {
-                    boolean updated = tempUpdateLatch.await(5, TimeUnit.SECONDS);
-                    if ((updated || !Double.isNaN(temp)) && temp >= templimitCPU) {
-                        Notifications.INSTANCE.send("Titanium Rewrite",
-                                "Your CPU temps have reached " + String.format("%.0f", temp) +
-                                        "°C, beware of thermal throttling", FLAME_ICON, 10000);
-                    }
-                } catch (InterruptedException e) {
-                    LOGGER.warn(e);
-                }
-            }
-        }, 0, 60, TimeUnit.SECONDS);
     }
 
     @Override
     public String getText(boolean example) {
         if (example) return "69.9°C";
-        UpdTemp();
+        UpdTempCPU();
         return cpuTempString;
     }
 
     @Override
     protected void drawLine(String line, float x, float y, float scale) {
-        UpdTemp();
+        UpdTempCPU();
         ThreadManager.execute(() -> {
             try {
                 boolean updated = tempUpdateLatch.await(5, TimeUnit.SECONDS);
-                if ((updated || !Double.isNaN(temp))){
-                    if (temp >= num2){
-                        clr = Hclr;
+                if ((updated || !Double.isNaN(tempCPU))){
+                    if (tempCPU >= num2){
+                        color = Hclr;
                     } else {
-                        clr = Dclr;
+                        color = Dclr;
                     }
+                }else{
+                    color = Dclr;
                 }
             } catch (InterruptedException e) {
                 LOGGER.warn(e);
             }
         });
-        if (!(clr == null)){
-            color = clr;
-        }else{
-            LOGGER.warn("No Colour Found");
-        }
         TextRenderer.drawScaledString(line, x, y, color.getRGB(), TextRenderer.TextType.toType(textType), scale);
     }
 }

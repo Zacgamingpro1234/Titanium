@@ -68,7 +68,7 @@ public class TitaniumConfig extends Config {
     public static int PPS = 0;        // default option
 
     @Info(
-            text = "This Utility Requries Admin Permissions",
+            text = "This Utility Requires Admin Permissions",
             type = InfoType.WARNING, // Types are: INFO, WARNING, ERROR, SUCCESS
             size = 5
     )
@@ -117,6 +117,13 @@ public class TitaniumConfig extends Config {
     )
     public static float percentMinimum = 15f; // default value
 
+    // using a lambda to create the runnable interface.
+    @Button(
+            name = "Re-Check For Batteries",    // name beside the button
+            text = "Check!"        // text on the button itself
+    )
+    Runnable runnable5 = BatteryLife::check;
+
 ////////////////////////////////////////////HUD////////////////////////////////////////
 
 @Info(
@@ -133,7 +140,7 @@ public static boolean ignored9; // Useless
         category = "HUD",
         text = "Launch"        // text on the button itself
 )
-Runnable runnable5 = Titaniumod::LaunchAsAdmin;
+Runnable runnable6 = Titaniumod::LaunchAsAdmin;
 
     @HUD(
             name = "CPU Temps",
