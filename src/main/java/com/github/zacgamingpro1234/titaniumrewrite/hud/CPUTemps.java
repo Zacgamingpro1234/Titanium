@@ -55,7 +55,7 @@ public class CPUTemps extends SingleTextHud {
 
     @Override
     public String getText(boolean example) {
-        if (example) return "69.9°C";
+        if (example) return String.format(("%." + num + "f°C"), 69.0);
         UpdTempCPU();
         return cpuTempString;
     }

@@ -98,7 +98,7 @@ public class BatteryLife extends SingleTextHud {
 
     @Override
     public String getText(boolean example) {
-        if (example) return "69%";
+        if (example) return String.format(("%." + num + "f"), 69.0) + "%";
         UpdLife();
         return percentString;
     }
