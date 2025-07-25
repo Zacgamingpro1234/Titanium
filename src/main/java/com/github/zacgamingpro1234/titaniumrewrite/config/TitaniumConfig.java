@@ -113,8 +113,7 @@ public class TitaniumConfig extends Config {
 
     @Slider(
             name = "RAM Left To Warn",
-            min = 0f, max = 4096f,
-            step = 512
+            min = 0f, max = 4096f
     )
     public static int RAMLeftLimit = (int) (RAMTotal / Math.pow(1024, 2)*.08); // default value
 
