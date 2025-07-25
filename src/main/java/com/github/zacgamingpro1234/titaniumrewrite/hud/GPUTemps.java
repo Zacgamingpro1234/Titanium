@@ -6,17 +6,16 @@ import cc.polyfrost.oneconfig.config.core.OneColor;
 import cc.polyfrost.oneconfig.hud.SingleTextHud;
 import cc.polyfrost.oneconfig.renderer.TextRenderer;
 import com.github.zacgamingpro1234.titaniumrewrite.ThreadManager;
-import io.github.pandalxb.jlibrehardwaremonitor.config.ComputerConfig;
-import io.github.pandalxb.jlibrehardwaremonitor.manager.LibreHardwareManager;
 import io.github.pandalxb.jlibrehardwaremonitor.model.Sensor;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import static com.github.zacgamingpro1234.titaniumrewrite.SharedResources.*;
 
 public class GPUTemps extends SingleTextHud {
-    private static final LibreHardwareManager libreHardwareManager = LibreHardwareManager.createInstance(ComputerConfig.getInstance().setGpuEnabled(true));
     public static volatile double tempGPU = Double.NaN;
     private static volatile String tempstring = "N/A";
+    private static CountDownLatch PrivLatch = new CountDownLatch(1);
     @Number(
             name = "Decimal Accuracy",    // name of the component
             min = 0, max = 6,        // min and max values (anything above/below is set to the max/min
@@ -42,12 +41,14 @@ public class GPUTemps extends SingleTextHud {
         try {
             ThreadManager.execute(() -> {
                 try {
+                    PrivLatch = new CountDownLatch(1);
                     List<Sensor> sensors = libreHardwareManager.querySensors("GPU", "Temperature");
                     for (Sensor sensor : sensors) {
                         tempGPU = sensor.getValue();
                         tempstring = String.format(("%." + num + "f°C"), tempGPU);
                     }
                     tempUpdateLatch.countDown();
+                    PrivLatch.countDown();
                 } catch (Exception e) {
                     LOGGER.warn(e);
                 }
@@ -73,7 +74,7 @@ public class GPUTemps extends SingleTextHud {
         UpdTempGPU();
         ThreadManager.execute(() -> {
             try {
-                boolean updated = tempUpdateLatch.await(5, TimeUnit.SECONDS);
+                boolean updated = PrivLatch.await(5, TimeUnit.SECONDS);
                 if ((updated || !Double.isNaN(tempGPU))){
                     if (tempGPU >= num2){
                         color = Hclr;

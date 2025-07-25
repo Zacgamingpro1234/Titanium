@@ -8,9 +8,9 @@ import cc.polyfrost.oneconfig.utils.Notifications;
 import cc.polyfrost.oneconfig.config.data.Mod;
 import cc.polyfrost.oneconfig.config.data.ModType;
 import com.github.zacgamingpro1234.titaniumrewrite.Titaniumod;
-import com.github.zacgamingpro1234.titaniumrewrite.hud.BatteryLife;
-import com.github.zacgamingpro1234.titaniumrewrite.hud.CPUTemps;
-import com.github.zacgamingpro1234.titaniumrewrite.hud.GPUTemps;
+import com.github.zacgamingpro1234.titaniumrewrite.hud.*;
+
+import static com.github.zacgamingpro1234.titaniumrewrite.hud.RAMUsage.RAMTotal;
 
 public class TitaniumConfig extends Config {
 ////////////////////////////////////////////GENERAL////////////////////////////////////////
@@ -106,6 +106,18 @@ public class TitaniumConfig extends Config {
     public static float templimitGPU = 85f; // default value
 
     @Switch(
+            name = "Warn via Notification if certain RAM Usages are reached",
+            size = 2
+    )
+    public static boolean RAMwarn = false;
+
+    @Slider(
+            name = "RAM Used To Warn",
+            min = 0f, max = 65536f
+    )
+    public static int RAMUsageLimit = (int) (RAMTotal / Math.pow(1024, 2)*.92); // default value
+
+    @Switch(
             name = "Warn via Notification if the battery is lower than a certain percent",
             size = 2
     )
@@ -154,11 +166,23 @@ Runnable runnable6 = Titaniumod::LaunchAsAdmin;
     )
     public GPUTemps hud2 = new GPUTemps();
 
+/*  @HUD(
+            name = "GPU Vram",
+            category = "HUD"
+    )
+    public GPUVram hud3 = new GPUVram();*/
+
+    @HUD(
+            name = "RAM Usage",
+            category = "HUD"
+    )
+    public RAMUsage hud4 = new RAMUsage();
+
     @HUD(
             name = "Battery Percent",
             category = "HUD"
     )
-    public BatteryLife hud3 = new BatteryLife();
+    public BatteryLife hud5 = new BatteryLife();
 
 ////////////////////////////////////////////CMD////////////////////////////////////////
 

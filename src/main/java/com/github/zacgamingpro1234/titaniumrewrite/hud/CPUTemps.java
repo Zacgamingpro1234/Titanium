@@ -6,12 +6,14 @@ import cc.polyfrost.oneconfig.config.core.OneColor;
 import cc.polyfrost.oneconfig.hud.SingleTextHud;
 import cc.polyfrost.oneconfig.renderer.TextRenderer;
 import com.github.zacgamingpro1234.titaniumrewrite.ThreadManager;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import static com.github.zacgamingpro1234.titaniumrewrite.SharedResources.*;
 
 public class CPUTemps extends SingleTextHud {
     public static volatile double tempCPU = Double.NaN;
     private static volatile String cpuTempString = "N/A";
+    private static CountDownLatch PrivLatch = new CountDownLatch(1);
     @Number(
             name = "Decimal Accuracy",    // name of the component
             min = 0, max = 6,        // min and max values (anything above/below is set to the max/min
@@ -35,11 +37,13 @@ public class CPUTemps extends SingleTextHud {
 
     public static void UpdTempCPU() {
         try {
+            PrivLatch = new CountDownLatch(1);
             ThreadManager.execute(() -> {
                 try {
                     tempCPU = SENSORS.getCpuTemperature();
                     cpuTempString = String.format(("%." + num + "f°C"), tempCPU);
                     tempUpdateLatch.countDown();
+                    PrivLatch.countDown();
                 } catch (Exception e) {
                     LOGGER.warn(e);
                 }
@@ -65,7 +69,7 @@ public class CPUTemps extends SingleTextHud {
         UpdTempCPU();
         ThreadManager.execute(() -> {
             try {
-                boolean updated = tempUpdateLatch.await(5, TimeUnit.SECONDS);
+                boolean updated = PrivLatch.await(5, TimeUnit.SECONDS);
                 if ((updated || !Double.isNaN(tempCPU))){
                     if (tempCPU >= num2){
                         color = Hclr;
