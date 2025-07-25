@@ -109,13 +109,14 @@ public class TitaniumConfig extends Config {
             name = "Warn via Notification if certain RAM Usages are reached",
             size = 2
     )
-    public static boolean RAMwarn = false;
+    public static boolean RAMwarn = true;
 
     @Slider(
-            name = "RAM Used To Warn",
-            min = 0f, max = 65536f
+            name = "RAM Left To Warn",
+            min = 0f, max = 4096f,
+            step = 512
     )
-    public static int RAMUsageLimit = (int) (RAMTotal / Math.pow(1024, 2)*.92); // default value
+    public static int RAMLeftLimit = (int) (RAMTotal / Math.pow(1024, 2)*.08); // default value
 
     @Switch(
             name = "Warn via Notification if the battery is lower than a certain percent",

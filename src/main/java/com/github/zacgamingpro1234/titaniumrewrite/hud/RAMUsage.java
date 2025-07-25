@@ -23,7 +23,7 @@ public class RAMUsage extends SingleTextHud {
             name = "Select Unit",
             options = {"Bytes", "KiloBytes", "MegaBytes", "GigaBytes"}
     )
-    public static volatile int num = 0;
+    public static volatile int num = 2;
 
     @Color(name = "Default Color")
     OneColor Dclr = new OneColor(255, 255, 255);
@@ -34,16 +34,16 @@ public class RAMUsage extends SingleTextHud {
     @Number(
             name = "High Usage Amount",
             min  = 0f,
-            max  = 65536f,
+            max  = 4096f,
             step = 512
     )
-    public static int num2 = (int)((RAMTotal / 1024.0 / 1024.0)*.08);
+    public static int num2 = (int)((RAMTotal / Math.pow(1024, 2))*.08);
 
     @Dropdown(
             name = "Select Styling",
             options = {"Percentage", "Amount Free", "Free/Total", "Total"}
     )
-    public static int value = 0;
+    public static int value = 3;
 
     @Switch(
             name = "Change From Remaining To Using"

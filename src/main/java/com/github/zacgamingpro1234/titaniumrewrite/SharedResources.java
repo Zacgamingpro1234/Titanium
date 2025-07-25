@@ -102,10 +102,10 @@ public class SharedResources {
                     UpdRAMamt();
                     try {
                         boolean updated = tempUpdateLatch.await(5, TimeUnit.SECONDS);
-                        if (updated && RAMFree >= RAMUsageLimit) {
+                        if (updated && RAMLeftLimit >= RAMFree) {
                             Notifications.INSTANCE.send("Titanium Rewrite",
-                                    "Your Amount Of Free RAM has Reached " + String.format(("%." + idk + "f"), RAMFree/divisor) + numstring +
-                                            ", please close background apps", RAM_ICON, 10000);
+                                    "You Have " + String.format(("%." + idk + "f"), RAMFree/divisor) + numstring +
+                                            " Of RAM Left, please close background apps", RAM_ICON, 10000);
                         }
                     } catch (InterruptedException e) {
                         LOGGER.warn(e);
