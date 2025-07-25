@@ -43,7 +43,7 @@ public class RAMUsage extends SingleTextHud {
             name = "Select Styling",
             options = {"Percentage", "Amount Free", "Free/Total", "Total"}
     )
-    public static int value = 3;
+    public static int value = 2;
 
     @Switch(
             name = "Change From Remaining To Using"
