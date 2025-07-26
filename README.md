@@ -1,38 +1,14 @@
 # Titanium
-A mod that optimizes stuff outside of Minecraft.
+A mod that optimizes stuff outside of Minecraft. With this mod you can enable the Ultimate Powerplan, Increase Game Priority, Warn If You Are Low On System Resources and View HUDs about your systems resources such as CPU/GPU Temps and RAM Usage.
+### Compatibility
+This mod is only tested on Windows 11, but it should work on most Windows 10 systems. Compatibility between other OSes such as MacOS or Linux are not confirmed. Checks have been made to disable certain features that will most likely not work. HUDs should work since it uses [Oshi](https://github.com/oshi/oshi) which is multi-platform.
 
-### A rewrite is coming this summer (More info at QA below)
+## Libraries Used
+- [Oshi](https://github.com/oshi/oshi) – [MIT License](https://github.com/oshi/oshi?tab=MIT-1-ov-file#readme)  
+- [jLibreHardwareMonitor](https://github.com/pandalxb/jLibreHardwareMonitor) – [Apache-2.0](https://github.com/pandalxb/jLibreHardwareMonitor?tab=Apache-2.0-1-ov-file#readme)  
+- [jPowerShell](https://github.com/pandalxb/jPowerShell) – [Apache-2.0](https://github.com/pandalxb/jPowerShell?tab=Apache-2.0-1-ov-file#readme)  
+- [OpenHardwareMonitor](https://github.com/openhardwaremonitor/openhardwaremonitor) – [Mozilla Public License 2.0](https://openhardwaremonitor.org/license/)  
+- [OneConfig v0](https://github.com/Polyfrost/OneConfig/tree/develop-v0) – [GNU Lesser General Public License v3.0 (with additional terms)](https://github.com/Polyfrost/OneConfig/blob/develop-v0/LICENSE)  
 
-<details>
-<summary>QA</summary>
-
-<details>
-<summary>Will this rewrite integrate OneConfig?</summary>
-Yes, but unfortunately this might slow down development since I have to ask and wait for developers to add certain features.
-</details>
-
-<details>
-<summary>Will you support 1.16+ and/or fabric/neoforge?</summary>
-Probably since OneConfig is currently developing a Modern MC port with these loaders. This also may take some time as it is still in development by PolyFrost.
-</details>
-
-<details>
-<summary>What features will this rewrite have?</summary>
-I have many features planned. Here are a list that I will add, not necessarly on release:    
-
-- PowerPlan Detector & Selector with Ultimate Powerplan option
-- An Automatic Priority Setter Just like the current one, but supports all custom launchers
-- A custom script that you can upload on github that the user can choose to run on start-up or closing of minecraft
-- An OS Detector that allows scripts to not run if the system is not supported.
-- A live log viewer inside of Powershell with proper minecraft text/colour formatting.
-</details>
-
-
-
-</details>
-<details>
-<summary>Licensing & Redistribution</summary>
-
-You can use this mod for personal use.                                                                                                                                                                                              
-If you want to put this mod in your modrinth modpack you can freely. If you want to put this in your Modpack outside of modrinth you must add appropriate credit.(A link to the mod, the name (Titanium) and the creator (Zacgamingpro1234)
-</details>  
+## Licensing
+The original code written by Zacgamingpro1234 and other contributors is released under the [MIT License](https://github.com/Zacgamingpro1234/Titanium/tree/main?tab=MIT-1-ov-file). All bundled libraries and external tools retain their respective licenses. Where required, proper attribution and compliance with their terms are ensured.
