@@ -1,7 +1,7 @@
 # Titanium
 A mod that optimizes stuff outside of Minecraft. With this mod you can enable the Ultimate Powerplan, Increase Game Priority, Warn If You Are Low On System Resources and View HUDs about your systems resources such as CPU/GPU Temps and RAM Usage.
 ### Compatibility
-This mod is only tested on Windows 11, but it should work on most Windows 10 systems. Compatibility between other OSes such as MacOS or Linux are not confirmed. Checks have been made to disable certain features that will most likely not work. HUDs should work since it uses [Oshi](https://github.com/oshi/oshi) which is multi-platform.
+This mod is only tested on Windows 11, but it should work on most Windows 10 systems. Compatibility between other OSes such as macOS or Linux are not confirmed. Checks have been made to disable certain features that will most likely not work. HUDs should work since it uses [Oshi](https://github.com/oshi/oshi) which is multi-platform.
 
 ## Libraries Used
 - [Oshi](https://github.com/oshi/oshi) – [MIT License](https://github.com/oshi/oshi?tab=MIT-1-ov-file#readme)  
