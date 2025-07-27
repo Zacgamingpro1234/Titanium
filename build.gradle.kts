@@ -99,6 +99,8 @@ dependencies {
     shade("io.github.pandalxb:jLibreHardwareMonitor:1.0.5")
     implementation("net.java.dev.jna:jna:5.17.0")
     shade("net.java.dev.jna:jna:5.17.0")
+    implementation("net.java.dev.jna:jna-platform:5.17.0")
+    shade("net.java.dev.jna:jna-platform:5.17.0")
 
     // Adds DevAuth, which we can use to log in to Minecraft in development.
     modRuntimeOnly("me.djtheredstoner:DevAuth-${if (platform.isFabric) "fabric" else if (platform.isLegacyForge) "forge-legacy" else "forge-latest"}:1.2.0")
