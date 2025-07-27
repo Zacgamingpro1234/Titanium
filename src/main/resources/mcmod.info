@@ -2,7 +2,7 @@
   {
     "modid": "${id}",
     "name": "${name}",
-    "description": "",
+    "description": "A mod that optimizes stuff outside of Minecraft",
     "version": "${version}",
     "mcversion": "${mcVersionStr}",
     "url": "https://modrinth.com/mod/titaniumod",
@@ -11,7 +11,7 @@
       "Zacgamingpro1234"
     ],
     "credits": "",
-    "logoFile": "",
+    "logoFile": "Assets/logo.png",
     "screenshots": [],
     "dependencies": []
   }

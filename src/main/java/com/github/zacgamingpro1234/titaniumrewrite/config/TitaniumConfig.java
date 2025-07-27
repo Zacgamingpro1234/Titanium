@@ -317,7 +317,7 @@ public static String PowerplanDefault = "717AD10b-71F4-4A5E-171F-4A5E71F4A5E1";
 
     public TitaniumConfig() {
         // Available mod types: PVP, HUD, UTIL_QOL, HYPIXEL, SKYBLOCK
-        super(new Mod("Titanium Rewrite", ModType.UTIL_QOL), "TitaniumConfig.json");
+        super(new Mod("Titanium Rewrite", ModType.UTIL_QOL, "/Assets/logo.png"), "TitaniumConfig.json");
         initialize();
         //cmd dependencies for os
         addDependency("lCMDtUP", "Enable BypassOS Is Off", () -> (Titaniumod.isWindows || BypassOS)); // disable RAACMD if BypassOS is off, making it dependant
