@@ -92,15 +92,15 @@ dependencies {
     // Adds the OneConfig library, so we can develop with it.
     modCompileOnly("cc.polyfrost:oneconfig-$platform:0.2.2-alpha+")
 
-    //Adds Oshi/jLibre
-    implementation("com.github.oshi:oshi-core:6.8.2")
-    shade("com.github.oshi:oshi-core:6.8.2")
-    implementation("io.github.pandalxb:jLibreHardwareMonitor:1.0.5")
-    shade("io.github.pandalxb:jLibreHardwareMonitor:1.0.5")
-    implementation("net.java.dev.jna:jna:5.17.0")
-    shade("net.java.dev.jna:jna:5.17.0")
-    implementation("net.java.dev.jna:jna-platform:5.17.0")
-    shade("net.java.dev.jna:jna-platform:5.17.0")
+    //Adds jLibre
+    implementation("io.github.pandalxb:jLibreHardwareMonitor:1.0.6"){
+        exclude(group = "net.java.dev.jna", module = "jna")
+        exclude(group = "net.java.dev.jna", module = "jna-platform")
+    }
+    shade("io.github.pandalxb:jLibreHardwareMonitor:1.0.6"){
+        exclude(group = "net.java.dev.jna", module = "jna")
+        exclude(group = "net.java.dev.jna", module = "jna-platform")
+    }
 
     // Adds DevAuth, which we can use to log in to Minecraft in development.
     modRuntimeOnly("me.djtheredstoner:DevAuth-${if (platform.isFabric) "fabric" else if (platform.isLegacyForge) "forge-legacy" else "forge-latest"}:1.2.0")
@@ -179,8 +179,8 @@ tasks {
         configurations = listOf(shade, modShade)
         duplicatesStrategy = DuplicatesStrategy.EXCLUDE
         relocate("oshi", "com.github.zacgamingpro1234.shade.oshi")
-        relocate("com.sun.jna", "com.github.zacgamingpro1234.shade.jna")
-        relocate("org.slf4j", "com.github.zacgamingpro1234.shade.slf4j")
+//        relocate("com.sun.jna", "com.github.zacgamingpro1234.shade.jna")
+//        relocate("org.slf4j", "com.github.zacgamingpro1234.shade.slf4j")
     }
 
     remapJar {

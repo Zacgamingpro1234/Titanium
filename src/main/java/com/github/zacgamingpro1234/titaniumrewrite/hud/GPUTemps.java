@@ -8,6 +8,7 @@ import cc.polyfrost.oneconfig.renderer.TextRenderer;
 import com.github.zacgamingpro1234.titaniumrewrite.ThreadManager;
 import io.github.pandalxb.jlibrehardwaremonitor.model.Sensor;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import static com.github.zacgamingpro1234.titaniumrewrite.SharedResources.*;
@@ -16,10 +17,11 @@ public class GPUTemps extends SingleTextHud {
     public static volatile double tempGPU = Double.NaN;
     private static volatile String tempstring = "N/A";
     private static CountDownLatch PrivLatch = new CountDownLatch(1);
+    private static volatile List<Sensor> sensors;
+    private static int ignticks;
     @Number(
             name = "Decimal Accuracy",    // name of the component
-            min = 0, max = 6,        // min and max values (anything above/below is set to the max/min
-            step = 1        // each time the arrow is clicked it will increase/decrease by this amount
+            min = 0, max = 6        // min and max values (anything above/below is set to the max/min
     )
     public static int num = 0; // default value
     @Color(
@@ -37,24 +39,30 @@ public class GPUTemps extends SingleTextHud {
     )
     public static float num2 = 85; // default value
 
-    public static void UpdTempGPU() {
-        try {
-            ThreadManager.execute(() -> {
-                try {
-                    PrivLatch = new CountDownLatch(1);
-                    List<Sensor> sensors = libreHardwareManager.querySensors("GPU", "Temperature");
-                    for (Sensor sensor : sensors) {
-                        tempGPU = sensor.getValue();
+    public static void UpdTempGPU(boolean forced) {
+        if (forced || ignticks > 10) {
+            try {
+                if (!forced) ignticks = 0;
+                PrivLatch = new CountDownLatch(1);
+                ThreadManager.execute(() -> {
+                    try {
+                        sensors = libreHardwareManager.querySensors("GPU", "Temperature");
+                        Optional<Sensor> coreSensor = sensors.stream()
+                                .filter(s -> "GPU Core".equals(s.getName()))
+                                .findFirst();
+                        coreSensor.ifPresent(sensor -> tempGPU = sensor.getValue());
                         tempstring = String.format(("%." + num + "f°C"), tempGPU);
+                        tempUpdateLatch.countDown();
+                        PrivLatch.countDown();
+                    } catch (Exception e) {
+                        LOGGER.warn(e);
                     }
-                    tempUpdateLatch.countDown();
-                    PrivLatch.countDown();
-                } catch (Exception e) {
-                    LOGGER.warn(e);
-                }
-            });
-        } catch (Exception e) {
-            LOGGER.warn(e);
+                });
+            } catch (Exception e) {
+                LOGGER.warn(e);
+            }
+        }else{
+            ignticks += 1;
         }
     }
 
@@ -65,13 +73,12 @@ public class GPUTemps extends SingleTextHud {
     @Override
     public String getText(boolean example) {
         if (example) return String.format(("%." + num + "f°C"), 69.0);
-        UpdTempGPU();
+        UpdTempGPU(false);
         return tempstring;
     }
 
     @Override
     protected void drawLine(String line, float x, float y, float scale) {
-        UpdTempGPU();
         ThreadManager.execute(() -> {
             try {
                 boolean updated = PrivLatch.await(5, TimeUnit.SECONDS);

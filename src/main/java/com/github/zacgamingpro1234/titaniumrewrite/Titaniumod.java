@@ -5,17 +5,12 @@ import cc.polyfrost.oneconfig.events.event.InitializationEvent;
 import cc.polyfrost.oneconfig.libs.eventbus.Subscribe;
 import cc.polyfrost.oneconfig.utils.Notifications;
 import com.github.zacgamingpro1234.titaniumrewrite.config.TitaniumConfig;
-import net.minecraft.client.Minecraft;
+import io.github.pandalxb.jlibrehardwaremonitor.util.OSDetector;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import oshi.software.os.OperatingSystem;
+
 import java.lang.management.ManagementFactory;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.Objects;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 import static com.github.zacgamingpro1234.titaniumrewrite.SharedResources.*;
 
 import static com.github.zacgamingpro1234.titaniumrewrite.config.TitaniumConfig.PowerplanDefault;
@@ -28,18 +23,14 @@ public class Titaniumod {
     public static Boolean Enableable = false;
     public TitaniumConfig config;
     public static boolean isWindows;
-    public static OperatingSystem os;
+    public static String os;
 
     /// /////////////////////////////////////////MISC////////////////////////////////////////
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) throws IOException {
-        //Checks If We Are Using Windows using Oshi OS Family
-        os = SYSTEM_INFO.getOperatingSystem();
-        LOGGER.info(os.toString());
-        String ostype = os.getFamily();
-        if (Objects.equals(ostype, "Windows")) {
-            isWindows = true;
-        }
+        //Checks If We Are Using Windows using jLibreOSDetector
+        isWindows = OSDetector.isWindows();
+        os = "OSInfo.OSType.WINDOWS";
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             ThreadManager.shutdown();
             if (isWindows) { //If We Have Windows, Continue With The Code
@@ -295,72 +286,4 @@ public class Titaniumod {
         }
     }
 
-    /// /////////////////////////////////////////LAUNCH ADMIN APP////////////////////////////////////////
-
-    private static void LaunchIt(String fulldir){
-        try {
-            ProcessBuilder processBuilder = new ProcessBuilder("powershell", "-WindowStyle", "Hidden", "-Command", "Start-Process", "-FilePath", fulldir, "-WindowStyle", "Hidden");
-            Process process = processBuilder.start();
-        } catch (IOException e) {
-            LOGGER.error(e);
-        }
-    }
-
-    public static boolean unzip(String zipFile, String destFolder) throws IOException {
-        try (InputStream resourceStream = Titaniumod.class.getResourceAsStream(zipFile)) {
-            if (resourceStream == null) {
-                LOGGER.error("Could not find resource: {}", zipFile);
-                return false;
-            }
-            try (ZipInputStream zis = new ZipInputStream((resourceStream))) {
-                ZipEntry entry;
-                byte[] buffer = new byte[1024];
-                while ((entry = zis.getNextEntry()) != null) {
-                    File newFile = new File(destFolder + File.separator + entry.getName());
-                    if (entry.isDirectory()) {
-                        if (!newFile.mkdirs()) {
-                            LOGGER.error("Failed to create directory: {}", newFile.getAbsolutePath());
-                            return false;
-                        }
-                    } else {
-                        File parentDir = new File(newFile.getParent());
-                        if (!parentDir.exists() && !parentDir.mkdirs()) {
-                            LOGGER.error("Failed to create parent directory: {}", parentDir.getAbsolutePath());
-                            return false;
-                        }
-
-                        try (FileOutputStream fos = new FileOutputStream(newFile)) {
-                            int length;
-                            while ((length = zis.read(buffer)) > 0) {
-                                fos.write(buffer, 0, length);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return true;
-    }
-
-    public static void LaunchAsAdmin() {
-        new Thread(() -> {
-            String mcDir = Minecraft.getMinecraft().mcDataDir.toString();
-            String dir = mcDir + File.separator + "OHM";
-            String fulldir = dir + File.separator + "OpenHardwareMonitor.exe";
-            if (!Files.exists(Paths.get(fulldir))) {
-                try {
-                    String zipFileName = "/third-party/OpenHardwareMonitor.zip";
-                    if (unzip(zipFileName, dir)) {
-                        LaunchIt(fulldir);
-                    }else{
-                        LOGGER.error("Failed To Launch OHM Due To Extraction Error");
-                    }
-                } catch (IOException e) {
-                    LOGGER.error(e);
-                }
-            } else {
-                LaunchIt(fulldir);
-            }
-        }).start();
-    }
 }

@@ -7,10 +7,6 @@ import io.github.pandalxb.jlibrehardwaremonitor.manager.LibreHardwareManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
-import oshi.SystemInfo;
-import oshi.hardware.GlobalMemory;
-import oshi.hardware.HardwareAbstractionLayer;
-import oshi.hardware.Sensors;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
@@ -25,14 +21,14 @@ import static com.github.zacgamingpro1234.titaniumrewrite.hud.CPUTemps.UpdTempCP
 import static com.github.zacgamingpro1234.titaniumrewrite.hud.CPUTemps.tempCPU;
 import static com.github.zacgamingpro1234.titaniumrewrite.hud.GPUTemps.UpdTempGPU;
 import static com.github.zacgamingpro1234.titaniumrewrite.hud.GPUTemps.tempGPU;
-import static com.github.zacgamingpro1234.titaniumrewrite.hud.RAMUsage.*;
+//import static com.github.zacgamingpro1234.titaniumrewrite.hud.RAMUsage.*;
 
 public class SharedResources {
-    public static final LibreHardwareManager libreHardwareManager = LibreHardwareManager.createInstance(ComputerConfig.getInstance().setGpuEnabled(true));
-    public static final SystemInfo SYSTEM_INFO = new SystemInfo();
-    public static final HardwareAbstractionLayer HARDWARE = SYSTEM_INFO.getHardware();
-    public static final Sensors SENSORS = HARDWARE.getSensors();
-    public static final GlobalMemory memory = HARDWARE.getMemory();
+    public static final LibreHardwareManager libreHardwareManager = LibreHardwareManager.createInstance(ComputerConfig.getInstance()
+            .setGpuEnabled(true)
+            .setCpuEnabled(true)
+            .setBatteryEnabled(true)
+    );
     public static final Icon FLAME_ICON = new Icon("/Assets/flame.svg");
     public static final Logger LOGGER = LogManager.getLogger("titaniumrewrite");
     public static final Icon BATTERY_ICON = new Icon("/Assets/battery-warning.svg");
@@ -49,11 +45,11 @@ public class SharedResources {
             if (CPUwarn) amt.incrementAndGet();
             if (GPUwarn) amt.incrementAndGet();
             if (Batterywarn) amt.incrementAndGet();
-            if (RAMwarn) amt.incrementAndGet();
+            //if (RAMwarn) amt.incrementAndGet();
             tempUpdateLatch = new CountDownLatch(amt.get());
             ThreadManager.execute(() -> {
             if(CPUwarn) {
-                UpdTempCPU();
+                UpdTempCPU(true);
                 try {
                     boolean updated = tempUpdateLatch.await(5, TimeUnit.SECONDS);
                     if ((updated || !Double.isNaN(tempCPU)) && tempCPU >= templimitCPU) {
@@ -68,7 +64,7 @@ public class SharedResources {
 
             ThreadManager.execute(() -> {
             if (GPUwarn) {
-                UpdTempGPU();
+                UpdTempGPU(true);
                 try {
                     boolean updated = tempUpdateLatch.await(5, TimeUnit.SECONDS);
                     if ((updated || !Double.isNaN(tempGPU)) && tempGPU >= templimitGPU) {
@@ -83,8 +79,7 @@ public class SharedResources {
 
             ThreadManager.execute(() -> {
             if (Batterywarn) {
-                hi();
-                UpdLife();
+                UpdLife(true);
                 try {
                     boolean updated = tempUpdateLatch.await(5, TimeUnit.SECONDS);
                     if ((updated || !Double.isNaN(percent)) && percent <= percentMinimum && !charging) {
@@ -97,20 +92,20 @@ public class SharedResources {
                 }
             }});
 
-            ThreadManager.execute(() -> {
-                if (RAMwarn) {
-                    UpdRAMamt();
-                    try {
-                        boolean updated = tempUpdateLatch.await(5, TimeUnit.SECONDS);
-                        if (updated && RAMLeftLimit >= RAMFree) {
-                            Notifications.INSTANCE.send("Titanium Rewrite",
-                                    "You Have " + String.format(("%." + idk + "f"), RAMFree/divisor) + numstring +
-                                            " Of RAM Left, please close background apps", RAM_ICON, 10000);
-                        }
-                    } catch (InterruptedException e) {
-                        LOGGER.warn(e);
-                    }
-                }});
+//            ThreadManager.execute(() -> {
+//                if (RAMwarn) {
+//                    UpdRAMamt();
+//                    try {
+//                        boolean updated = tempUpdateLatch.await(5, TimeUnit.SECONDS);
+//                        if (updated && RAMLeftLimit >= RAMFree) {
+//                            Notifications.INSTANCE.send("Titanium Rewrite",
+//                                    "You Have " + String.format(("%." + idk + "f"), RAMFree/divisor) + numstring +
+//                                            " Of RAM Left, please close background apps", RAM_ICON, 10000);
+//                        }
+//                    } catch (InterruptedException e) {
+//                        LOGGER.warn(e);
+//                    }
+//                }});
         }, 0, 60, TimeUnit.SECONDS);
     }
 }

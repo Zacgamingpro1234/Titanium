@@ -4,24 +4,28 @@ import cc.polyfrost.oneconfig.config.annotations.Color;
 import cc.polyfrost.oneconfig.config.core.OneColor;
 import cc.polyfrost.oneconfig.hud.SingleTextHud;
 import cc.polyfrost.oneconfig.renderer.TextRenderer;
-import cc.polyfrost.oneconfig.utils.Notifications;
 import com.github.zacgamingpro1234.titaniumrewrite.ThreadManager;
-import oshi.hardware.PowerSource;
+import io.github.pandalxb.jlibrehardwaremonitor.model.Sensor;
 import cc.polyfrost.oneconfig.config.annotations.Number;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+
 import static com.github.zacgamingpro1234.titaniumrewrite.SharedResources.*;
 
 public class BatteryLife extends SingleTextHud {
     public static volatile double percent = Double.NaN;
     public static volatile String percentString = "No Battery Detected";
-    public static volatile PowerSource batry;
-    private static volatile  boolean hi = true;
     public static volatile boolean charging;
-    public static volatile boolean check = true;
+    private static CountDownLatch PrivLatch = new CountDownLatch(1);
+    private static volatile List<Sensor> sensorslvl;
+    private static volatile List<Sensor> sensorspwr;
+    private static int ignticks;
     @Number(
             name = "Decimal Accuracy",    // name of the component
-            min = 0, max = 6,        // min and max values (anything above/below is set to the max/min
-            step = 1        // each time the arrow is clicked it will increase/decrease by this amount
+            min = 0, max = 6        // min and max values (anything above/below is set to the max/min
     )
     public static int num = 2; // default value
     @Color(
@@ -47,41 +51,30 @@ public class BatteryLife extends SingleTextHud {
     )
     public static float num2 = 15; // default value
 
-    public static void check(){
-        check = true;
-    }
-    public static void hi(){
-        hi = true;
-    }
-
-    public static void UpdLife() {
-        if (check) {
+    public static void UpdLife(boolean forced) {
+        if (forced || ignticks > 10) {
             try {
+                if (!forced) ignticks = 0;
+                PrivLatch = new CountDownLatch(1);
                 ThreadManager.execute(() -> {
                     try {
-                        PowerSource ign = null;
-                        for (PowerSource battery : HARDWARE.getPowerSources()) {
-                            if ((batry == null) || (ign == null)) {
-                                ign = battery;
-                                batry = battery;
-                            } else {
-                                if (hi) {
-                                    LOGGER.warn("More Than 1 Battery Detected, Used First One Named As: {}", batry.getName());
-                                    hi = false;
-                                }
-                            }
-                        }
-                        if (batry == null) {
-                            LOGGER.warn("No Batteries Detected");
-                            Notifications.INSTANCE.send("Titanium Rewrite","No Batteries Detected," +
-                                            " If You Think This Is Wrong Please Re-check In The Config");
-                            check = false;
-                        }else{
-                            percent = (double) (100 * batry.getCurrentCapacity()) / batry.getMaxCapacity();
-                            percentString = String.format(("%." + num + "f"), percent) + "%";
-                            charging = batry.isCharging();
-                            tempUpdateLatch.countDown();
-                        }
+                        sensorslvl = libreHardwareManager.querySensors("Battery", "Level");
+                        Optional<Sensor> lvl = sensorslvl.stream()
+                                .filter(s -> "Charge Level".equals(s.getName()))
+                                .findFirst();
+                        lvl.ifPresent(sensor -> percent = sensor.getValue());
+
+                        sensorspwr = libreHardwareManager.querySensors("Battery", "Power");
+                        Optional<Sensor> pwr = sensorspwr.stream()
+                                .filter(s -> {
+                                    String n = s.getName();
+                                    return "Charge Rate".equals(n) || "Discharge Rate".equals(n);
+                                })
+                                .findFirst();
+                        pwr.ifPresent(s -> charging = "Charge Rate".equals(s.getName()));
+
+                        percentString = String.format(("%." + num + "f"), percent) + "%";
+                        tempUpdateLatch.countDown();
                     } catch (Exception e) {
                         LOGGER.warn(e);
                     }
@@ -89,6 +82,8 @@ public class BatteryLife extends SingleTextHud {
             } catch (Exception e) {
                 LOGGER.warn(e);
             }
+        }else{
+            ignticks += 1;
         }
     }
 
@@ -99,18 +94,17 @@ public class BatteryLife extends SingleTextHud {
     @Override
     public String getText(boolean example) {
         if (example) return String.format(("%." + num + "f"), 69.0) + "%";
-        UpdLife();
+        UpdLife(false);
         return percentString;
     }
 
     @Override
     protected void drawLine(String line, float x, float y, float scale) {
-        UpdLife();
         ThreadManager.execute(() -> {
             try {
-                boolean updated = tempUpdateLatch.await(5, TimeUnit.SECONDS);
-                if ((updated || !Double.isNaN(percent))){
-                    if (percent >= 100){
+                boolean updated = PrivLatch.await(5, TimeUnit.SECONDS);
+                if ((updated || !Double.isNaN(percent))) {
+                    if (percent >= 100) {
                         color = FCclr;
                     } else if (charging) {
                         color = Cclr;
@@ -119,7 +113,7 @@ public class BatteryLife extends SingleTextHud {
                     } else {
                         color = Dclr;
                     }
-                }else{
+                } else {
                     color = Dclr;
                 }
             } catch (InterruptedException e) {

@@ -10,7 +10,7 @@ import cc.polyfrost.oneconfig.config.data.ModType;
 import com.github.zacgamingpro1234.titaniumrewrite.Titaniumod;
 import com.github.zacgamingpro1234.titaniumrewrite.hud.*;
 
-import static com.github.zacgamingpro1234.titaniumrewrite.hud.RAMUsage.RAMTotal;
+//import static com.github.zacgamingpro1234.titaniumrewrite.hud.RAMUsage.RAMTotal;
 
 public class TitaniumConfig extends Config {
 ////////////////////////////////////////////GENERAL////////////////////////////////////////
@@ -24,7 +24,7 @@ public class TitaniumConfig extends Config {
             text = "Show"        // text on the button itself
     )
     Runnable runnable = () -> {    // using a lambda to create the runnable interface.
-        Notifications.INSTANCE.send("Titanium Rewrite","Your Current OS is " + Titaniumod.os.toString());
+        Notifications.INSTANCE.send("Titanium Rewrite","Your Current OS is " + Titaniumod.os);
     };
 
     @Dropdown(
@@ -105,7 +105,7 @@ public class TitaniumConfig extends Config {
     )
     public static float templimitGPU = 85f; // default value
 
-    @Switch(
+/*    @Switch(
             name = "Warn via Notification if certain RAM Usages are reached",
             size = 2
     )
@@ -116,7 +116,7 @@ public class TitaniumConfig extends Config {
             min = 0f, max = 4096f
     )
     public static int RAMLeftLimit = (int) (RAMTotal / Math.pow(1024, 2)*.08); // default value
-
+*/
     @Switch(
             name = "Warn via Notification if the battery is lower than a certain percent",
             size = 2
@@ -129,30 +129,15 @@ public class TitaniumConfig extends Config {
     )
     public static float percentMinimum = 15f; // default value
 
-    // using a lambda to create the runnable interface.
-    @Button(
-            name = "Re-Check For Batteries",    // name beside the button
-            text = "Check!"        // text on the button itself
-    )
-    Runnable runnable5 = BatteryLife::check;
-
 ////////////////////////////////////////////HUD////////////////////////////////////////
 
 @Info(
-        text = "This App Allows This Mod To Access CPU Temps, You can Also Access CPU Temps by Launching MC As Administrator",
+        text = "To Use CPU Temps You Must Launch The Game As Admin",
         type = InfoType.WARNING, // Types are: INFO, WARNING, ERROR, SUCCESS
         category = "HUD",
         size = 5
 )
 public static boolean ignored9; // Useless
-
-@Button(
-        name = "Launch The App",    // name beside the button
-        size = OptionSize.DUAL,
-        category = "HUD",
-        text = "Launch"        // text on the button itself
-)
-Runnable runnable6 = Titaniumod::LaunchAsAdmin;
 
     @HUD(
             name = "CPU Temps",
@@ -170,13 +155,13 @@ Runnable runnable6 = Titaniumod::LaunchAsAdmin;
             name = "GPU Vram",
             category = "HUD"
     )
-    public GPUVram hud3 = new GPUVram();*/
+    public GPUVram hud3 = new GPUVram();
 
     @HUD(
             name = "RAM Usage",
             category = "HUD"
     )
-    public RAMUsage hud4 = new RAMUsage();
+    public RAMUsage hud4 = new RAMUsage();*/
 
     @HUD(
             name = "Battery Percent",
