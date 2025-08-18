@@ -5,7 +5,7 @@ A mod that optimizes stuff outside of Minecraft. With this mod you can enable th
 [![GitHub Badge](https://badger-api-staging.worldwidepixel.ca/cozy?gradientStart=181F29&gradientEnd=0F131A&lineOne=Also%20On&lineTwo=Github!&colourOne=E8E8E8&colourTwo=FFFFFF&iconUrl=https://raw.githubusercontent.com/rdimascio/icons/master/icons/light/github.svg)](https://github.com/Zacgamingpro1234/Titanium)
 
 ### Compatibility
-This mod is only tested on Windows 11, but it should work on most Windows 10 systems. Compatibility between other OSes such as macOS or Linux are not confirmed. Checks have been made to disable certain features that will most likely not work. HUDs should work since it uses [Oshi](https://github.com/oshi/oshi) which is multi-platform.
+This mod is only tested on Windows 11, but it should work on most Windows 10 systems. Compatibility between other OSes such as macOS or Linux are not confirmed. Checks have been made to disable certain features that will most likely not work.
 
 ## Libraries Used
 - [jLibreHardwareMonitor](https://github.com/pandalxb/jLibreHardwareMonitor) – [Apache-2.0](https://github.com/pandalxb/jLibreHardwareMonitor?tab=Apache-2.0-1-ov-file#readme)  
