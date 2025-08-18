@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+import static com.github.zacgamingpro1234.titaniumrewrite.config.TitaniumConfig.*;
 import static com.github.zacgamingpro1234.titaniumrewrite.SharedResources.*;
 
 public class GPUTemps extends SingleTextHud {
@@ -19,28 +20,29 @@ public class GPUTemps extends SingleTextHud {
     private static CountDownLatch PrivLatch = new CountDownLatch(1);
     private static volatile List<Sensor> sensors;
     private static int ignticks;
+
     @Number(
             name = "Decimal Accuracy",    // name of the component
             min = 0, max = 6        // min and max values (anything above/below is set to the max/min
     )
-    public static int num = 0; // default value
+    public static volatile int num = 0; // default value
     @Color(
             name = "Default Color"
     )
-    OneColor Dclr = new OneColor(255, 255, 255);
+    volatile OneColor Dclr = new OneColor(255, 255, 255);
     @Color(
             name = "Hot Color"
     )
-    OneColor Hclr = new OneColor(255, 0, 0, 255);
+    volatile OneColor Hclr = new OneColor(255, 0, 0, 255);
     @Number(
             name = "Hot Amount",    // name of the component
             min = 0f, max = 110f,        // min and max values (anything above/below is set to the max/min
             step = 5       // each time the arrow is clicked it will increase/decrease by this amount
     )
-    public static float num2 = 85; // default value
+    public static volatile float num2 = 85; // default value
 
     public static void UpdTempGPU(boolean forced) {
-        if (forced || ignticks > 10) {
+        if (forced || ignticks > waitick) {
             try {
                 if (!forced) ignticks = 0;
                 PrivLatch = new CountDownLatch(1);
@@ -61,7 +63,7 @@ public class GPUTemps extends SingleTextHud {
             } catch (Exception e) {
                 LOGGER.warn(e);
             }
-        }else{
+        } else {
             ignticks += 1;
         }
     }
@@ -82,13 +84,13 @@ public class GPUTemps extends SingleTextHud {
         ThreadManager.execute(() -> {
             try {
                 boolean updated = PrivLatch.await(5, TimeUnit.SECONDS);
-                if ((updated || !Double.isNaN(tempGPU))){
-                    if (tempGPU >= num2){
+                if ((updated || !Double.isNaN(tempGPU))) {
+                    if (tempGPU >= num2) {
                         color = Hclr;
                     } else {
                         color = Dclr;
                     }
-                }else{
+                } else {
                     color = Dclr;
                 }
             } catch (InterruptedException e) {

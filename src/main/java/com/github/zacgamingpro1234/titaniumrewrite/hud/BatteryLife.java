@@ -7,12 +7,11 @@ import cc.polyfrost.oneconfig.renderer.TextRenderer;
 import com.github.zacgamingpro1234.titaniumrewrite.ThreadManager;
 import io.github.pandalxb.jlibrehardwaremonitor.model.Sensor;
 import cc.polyfrost.oneconfig.config.annotations.Number;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-
+import static com.github.zacgamingpro1234.titaniumrewrite.config.TitaniumConfig.*;
 import static com.github.zacgamingpro1234.titaniumrewrite.SharedResources.*;
 
 public class BatteryLife extends SingleTextHud {
@@ -23,36 +22,37 @@ public class BatteryLife extends SingleTextHud {
     private static volatile List<Sensor> sensorslvl;
     private static volatile List<Sensor> sensorspwr;
     private static int ignticks;
+
     @Number(
             name = "Decimal Accuracy",    // name of the component
             min = 0, max = 6        // min and max values (anything above/below is set to the max/min
     )
-    public static int num = 2; // default value
+    public static volatile int num = 2; // default value
     @Color(
             name = "Discharging Color"
     )
-    OneColor Dclr = new OneColor(255, 255, 255);
+    volatile OneColor Dclr = new OneColor(255, 255, 255);
     @Color(
             name = "Full Charge Color"
     )
-    OneColor FCclr = new OneColor(0, 255, 0, 255);
+    volatile OneColor FCclr = new OneColor(0, 255, 0, 255);
     @Color(
             name = "Charging Color"
     )
-    OneColor Cclr = new OneColor(0, 155, 0, 255);
+    volatile OneColor Cclr = new OneColor(0, 155, 0, 255);
     @Color(
             name = "Low Charge Color"
     )
-    OneColor LCclr = new OneColor(155, 0, 0, 255);
+    volatile OneColor LCclr = new OneColor(155, 0, 0, 255);
     @Number(
             name = "Low Charge Amount",    // name of the component
             min = 0f, max = 99.9f,        // min and max values (anything above/below is set to the max/min
             step = 5       // each time the arrow is clicked it will increase/decrease by this amount
     )
-    public static float num2 = 15; // default value
+    public static volatile float num2 = 15; // default value
 
     public static void UpdLife(boolean forced) {
-        if (forced || ignticks > 10) {
+        if (forced || ignticks > waitick) {
             try {
                 if (!forced) ignticks = 0;
                 PrivLatch = new CountDownLatch(1);
@@ -82,7 +82,7 @@ public class BatteryLife extends SingleTextHud {
             } catch (Exception e) {
                 LOGGER.warn(e);
             }
-        }else{
+        } else {
             ignticks += 1;
         }
     }

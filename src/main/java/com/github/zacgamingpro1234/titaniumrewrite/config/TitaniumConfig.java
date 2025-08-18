@@ -10,10 +10,8 @@ import cc.polyfrost.oneconfig.config.data.ModType;
 import com.github.zacgamingpro1234.titaniumrewrite.Titaniumod;
 import com.github.zacgamingpro1234.titaniumrewrite.hud.*;
 
-//import static com.github.zacgamingpro1234.titaniumrewrite.hud.RAMUsage.RAMTotal;
-
 public class TitaniumConfig extends Config {
-////////////////////////////////////////////GENERAL////////////////////////////////////////
+    /// /////////////////////////////////////////GENERAL////////////////////////////////////////
     @Switch(
             name = "Bypass OS" //Since There Is No Category Value It Will Default To General
     )
@@ -24,7 +22,7 @@ public class TitaniumConfig extends Config {
             text = "Show"        // text on the button itself
     )
     Runnable runnable = () -> {    // using a lambda to create the runnable interface.
-        Notifications.INSTANCE.send("Titanium Rewrite","Your Current OS is " + Titaniumod.os);
+        Notifications.INSTANCE.send("Titanium Rewrite", "Your Current OS is " + Titaniumod.os);
     };
 
     @Dropdown(
@@ -105,7 +103,7 @@ public class TitaniumConfig extends Config {
     )
     public static float templimitGPU = 85f; // default value
 
-/*    @Switch(
+    @Switch(
             name = "Warn via Notification if certain RAM Usages are reached",
             size = 2
     )
@@ -115,8 +113,8 @@ public class TitaniumConfig extends Config {
             name = "RAM Left To Warn",
             min = 0f, max = 4096f
     )
-    public static int RAMLeftLimit = (int) (RAMTotal / Math.pow(1024, 2)*.08); // default value
-*/
+    public static float RAMLeftLimit = 690; // default value
+
     @Switch(
             name = "Warn via Notification if the battery is lower than a certain percent",
             size = 2
@@ -129,15 +127,22 @@ public class TitaniumConfig extends Config {
     )
     public static float percentMinimum = 15f; // default value
 
-////////////////////////////////////////////HUD////////////////////////////////////////
+    /// /////////////////////////////////////////HUD////////////////////////////////////////
 
-@Info(
-        text = "To Use CPU Temps You Must Launch The Game As Admin",
-        type = InfoType.WARNING, // Types are: INFO, WARNING, ERROR, SUCCESS
-        category = "HUD",
-        size = 5
-)
-public static boolean ignored9; // Useless
+    @Slider(
+            name = "The Amount Of Ticks To Wait Until An Update",
+            min = 5f, max = 40,
+            category = "HUD"
+    )
+    public static int waitick = 10; // default value
+
+    @Info(
+            text = "To Use CPU Temps You Must Launch The Game As Admin",
+            type = InfoType.WARNING, // Types are: INFO, WARNING, ERROR, SUCCESS
+            category = "HUD",
+            size = 5
+    )
+    public static boolean ignored9; // Useless
 
     @HUD(
             name = "CPU Temps",
@@ -155,13 +160,13 @@ public static boolean ignored9; // Useless
             name = "GPU Vram",
             category = "HUD"
     )
-    public GPUVram hud3 = new GPUVram();
+    public GPUVram hud3 = new GPUVram();*/
 
     @HUD(
             name = "RAM Usage",
             category = "HUD"
     )
-    public RAMUsage hud4 = new RAMUsage();*/
+    public RAMUsage hud4 = new RAMUsage();
 
     @HUD(
             name = "Battery Percent",
@@ -169,7 +174,7 @@ public static boolean ignored9; // Useless
     )
     public BatteryLife hud5 = new BatteryLife();
 
-////////////////////////////////////////////CMD////////////////////////////////////////
+    /// /////////////////////////////////////////CMD////////////////////////////////////////
 
     @Info(
             text = "Advanced Users Only!",
@@ -233,7 +238,7 @@ public static boolean ignored9; // Useless
     )
     public static boolean RAACMDDOWN = false; // default value, Run As Admin CommandPrompt Startup
 
-////////////////////////////////////////////POWERSHELL////////////////////////////////////////
+    /// /////////////////////////////////////////POWERSHELL////////////////////////////////////////
 
     @Info(
             text = "PS Options",
@@ -269,9 +274,9 @@ public static boolean ignored9; // Useless
 //shutdown
 
     @Header(
-        text = "Shutdown",
-        category = "Debug",
-        size = 3
+            text = "Shutdown",
+            category = "Debug",
+            size = 3
     )
     public static boolean ignored3; // Useless
 
@@ -289,16 +294,16 @@ public static boolean ignored9; // Useless
     )
     public static boolean RAAPSDOWN = false; // default value, Run As Admin Powershell Shutdown
 
-////////////////////////////////////////////DEBUG MISC////////////////////////////////////////
+    /// /////////////////////////////////////////DEBUG MISC////////////////////////////////////////
 
-@Text(
-        name = "Powerplan To Revert To",
-        category = "Debug", //Give It A Category
-        secure = false, multiline = false
-)
-public static String PowerplanDefault = "717AD10b-71F4-4A5E-171F-4A5E71F4A5E1";
+    @Text(
+            name = "Powerplan To Revert To",
+            category = "Debug", //Give It A Category
+            secure = false, multiline = false
+    )
+    public static String PowerplanDefault = "717AD10b-71F4-4A5E-171F-4A5E71F4A5E1";
 
-////////////////////////////////////////////MISC////////////////////////////////////////
+    /// /////////////////////////////////////////MISC////////////////////////////////////////
 
     public TitaniumConfig() {
         // Available mod types: PVP, HUD, UTIL_QOL, HYPIXEL, SKYBLOCK
