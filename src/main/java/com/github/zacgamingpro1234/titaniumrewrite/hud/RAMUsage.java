@@ -29,26 +29,26 @@ public class RAMUsage extends SingleTextHud {
             name = "Select Unit",
             options = {"GigaBytes", "MegaBytes"}
     )
-    public static volatile int num = 1;
+    static volatile int num = 1;
 
     @Color(name = "Default Color")
-    volatile OneColor Dclr = new OneColor(255, 255, 255);
+    transient volatile OneColor Dclr = new OneColor(255, 255, 255);
 
     @Color(name = "High Usage Color")
-    volatile OneColor Hclr = new OneColor(255, 0, 0, 255);
+    transient volatile OneColor Hclr = new OneColor(255, 0, 0, 255);
 
     @Number(
             name = "High Usage Amount (In MB)",
             min = 0f,
             max = 4096f
     )
-    public static volatile float num2 = 690;
+    transient volatile float num2;
 
     @Dropdown(
             name = "Select Styling",
             options = {"Percentage", "Amount Free", "Free/Total", "Total"}
     )
-    public static volatile int value = 2;
+    static volatile int value = 2;
 
     @Number(
             name = "Decimal Accuracy",    // name of the component
@@ -59,7 +59,7 @@ public class RAMUsage extends SingleTextHud {
     @Switch(
             name = "Change From Remaining To Using"
     )
-    public static volatile boolean Using = false;
+    static volatile boolean Using = false;
 
     public RAMUsage() {
         super("RAM", false);
@@ -79,7 +79,6 @@ public class RAMUsage extends SingleTextHud {
 
     public static void UpdRAMamt(boolean forced) {
         if (forced || ignticks > waitick) {
-            LOGGER.warn("updated");
             try {
                 if (!forced) ignticks = 0;
                 ThreadManager.execute(() -> {

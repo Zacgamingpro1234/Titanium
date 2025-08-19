@@ -25,21 +25,21 @@ public class CPUTemps extends SingleTextHud {
             name = "Decimal Accuracy",    // name of the component
             min = 0, max = 6        // min and max values (anything above/below is set to the max/min
     )
-    public static volatile int num = 0; // default value
+    static volatile int num = 0; // default value
     @Color(
             name = "Default Color"
     )
-    volatile OneColor Dclr = new OneColor(255, 255, 255);
+    transient volatile OneColor Dclr = new OneColor(255, 255, 255);
     @Color(
             name = "Hot Color"
     )
-    volatile OneColor Hclr = new OneColor(255, 0, 0, 255);
+    transient volatile OneColor Hclr = new OneColor(255, 0, 0, 255);
     @Number(
             name = "Hot Amount",    // name of the component
             min = 0f, max = 110f,        // min and max values (anything above/below is set to the max/min
             step = 5       // each time the arrow is clicked it will increase/decrease by this amount
     )
-    public static volatile float num2 = 85; // default value
+    transient volatile float num2 = 85; // default value
 
     public static void UpdTempCPU(boolean forced) {
         if (forced || ignticks > waitick) {

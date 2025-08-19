@@ -22,15 +22,13 @@ public class Titaniumod {
     public static final String VERSION = "@VER@";
     public static Boolean Enableable = false;
     public TitaniumConfig config;
-    public static boolean isWindows;
-    public static String os;
+    public static final boolean isWindows = OSDetector.isWindows();
+    public static String osinfo = "maybe";
 
     /// /////////////////////////////////////////MISC////////////////////////////////////////
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) throws IOException {
-        //Checks If We Are Using Windows using jLibreOSDetector
-        isWindows = OSDetector.isWindows();
-        os = "OSInfo.OSType.WINDOWS";
+        config = new TitaniumConfig(); //Makes The Config Work In-Game
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             ThreadManager.shutdown();
             if (isWindows) { //If We Have Windows, Continue With The Code
@@ -40,7 +38,7 @@ public class Titaniumod {
             }
         })); //Run launchVerifiedDown When The Game Closes
         BufferedWriter writer = new BufferedWriter(new FileWriter("mod_config.log", true));
-        writer.write("Is Windows: " + os);
+        writer.write("Is Windows: " + osinfo);
         writer.newLine();
         writer.close();
         EventManager.INSTANCE.register(this); //Registers Us To The EventBus
@@ -48,7 +46,6 @@ public class Titaniumod {
 
     @Subscribe
     public void onInit(InitializationEvent event) {
-        config = new TitaniumConfig(); //Makes The Config Work In-Game
         executorrepeat();
         if (isWindows) { //If We Have Windows, Continue With The Code
             launchVerifiedUp();
@@ -134,7 +131,7 @@ public class Titaniumod {
                 processBuilder = new ProcessBuilder("cmd", "/c", "start", "cmd.exe", "/K", "cd", "\\");
             }
 
-            Process process = processBuilder.start();
+            processBuilder.start();
         } catch (IOException e) {
             LOGGER.error(e);
         }
@@ -155,7 +152,7 @@ public class Titaniumod {
                 processBuilder = new ProcessBuilder("cmd", "/c", "start", "cmd.exe", "/K", "cd", "\\");
             }
 
-            Process process = processBuilder.start();
+            processBuilder.start();
         } catch (IOException e) {
             LOGGER.error(e);
         }
@@ -175,7 +172,7 @@ public class Titaniumod {
                 processBuilder = new ProcessBuilder("cmd", "/c", "start", "powershell.exe", "-NoExit", "-Command", "Set-Location -Path '" + "C:\\" + "'");
             }
 
-            Process process = processBuilder.start();
+            processBuilder.start();
         } catch (IOException e) {
             LOGGER.error(e);
         }
@@ -195,7 +192,7 @@ public class Titaniumod {
                 processBuilder = new ProcessBuilder("cmd", "/c", "start", "powershell.exe", "-NoExit", "-Command", "Set-Location -Path '" + "C:\\" + "'");
             }
 
-            Process process = processBuilder.start();
+            processBuilder.start();
         } catch (IOException e) {
             LOGGER.error(e);
         }
@@ -228,7 +225,7 @@ public class Titaniumod {
             writer.write("ProcessID: " + processID + ", Setting priority to: " + Priority);
             writer.newLine();
             ProcessBuilder processBuilder = new ProcessBuilder("cmd", "/c", "wmic process where ProcessId=" + processID + " call setpriority " + Priority);
-            Process process = processBuilder.start();
+            processBuilder.start();
             Notifications.INSTANCE.send("Titanium Rewrite", "Priority "+Priority+" applied to ProcessID "+processID);
         } catch (IOException e) {
             LOGGER.error(e);
@@ -266,7 +263,7 @@ public class Titaniumod {
                 ProcessBuilder processBuilder2 = new ProcessBuilder("cmd", "/c", "powercfg -D 717AD10b-71F4-4A5E-171F-4A5E71F4A5E1");
                 Process process = processBuilder.start();
                 process.waitFor();
-                Process process2 = processBuilder2.start();
+                processBuilder2.start();
                 Notifications.INSTANCE.send("Titanium Rewrite", "Powerplan reverted back to original state");
             } catch (IOException | InterruptedException e) {
                 LOGGER.error(e);
@@ -279,7 +276,7 @@ public class Titaniumod {
     public static void CTwinUtil(){
         try {
             ProcessBuilder processBuilder = new ProcessBuilder("powershell", "-Command", "iwr -useb https://christitus.com/win | iex");
-            Process process = processBuilder.start();
+            processBuilder.start();
             Notifications.INSTANCE.send("Titanium Rewrite", "Launching The Ultimate Windows Utility by Chris Titus Tech, Please Wait and Accept The UAC");
         } catch (IOException e) {
             LOGGER.error(e);

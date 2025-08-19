@@ -16,7 +16,7 @@ import static com.github.zacgamingpro1234.titaniumrewrite.SharedResources.*;
 
 public class BatteryLife extends SingleTextHud {
     public static volatile double percent = Double.NaN;
-    public static volatile String percentString = "No Battery Detected";
+    public static volatile String percentString = "N/A";
     public static volatile boolean charging;
     private static CountDownLatch PrivLatch = new CountDownLatch(1);
     private static volatile List<Sensor> sensorslvl;
@@ -27,29 +27,29 @@ public class BatteryLife extends SingleTextHud {
             name = "Decimal Accuracy",    // name of the component
             min = 0, max = 6        // min and max values (anything above/below is set to the max/min
     )
-    public static volatile int num = 2; // default value
+    static volatile int num = 2; // default value
     @Color(
             name = "Discharging Color"
     )
-    volatile OneColor Dclr = new OneColor(255, 255, 255);
+    transient volatile OneColor Dclr = new OneColor(255, 255, 255);
     @Color(
             name = "Full Charge Color"
     )
-    volatile OneColor FCclr = new OneColor(0, 255, 0, 255);
+    transient volatile OneColor FCclr = new OneColor(0, 255, 0, 255);
     @Color(
             name = "Charging Color"
     )
-    volatile OneColor Cclr = new OneColor(0, 155, 0, 255);
+    transient volatile OneColor Cclr = new OneColor(0, 155, 0, 255);
     @Color(
             name = "Low Charge Color"
     )
-    volatile OneColor LCclr = new OneColor(155, 0, 0, 255);
+    transient volatile OneColor LCclr = new OneColor(155, 0, 0, 255);
     @Number(
             name = "Low Charge Amount",    // name of the component
             min = 0f, max = 99.9f,        // min and max values (anything above/below is set to the max/min
             step = 5       // each time the arrow is clicked it will increase/decrease by this amount
     )
-    public static volatile float num2 = 15; // default value
+    transient volatile float num2 = 15; // default value
 
     public static void UpdLife(boolean forced) {
         if (forced || ignticks > waitick) {

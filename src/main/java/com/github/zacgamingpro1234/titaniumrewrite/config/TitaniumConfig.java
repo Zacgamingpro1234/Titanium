@@ -22,7 +22,7 @@ public class TitaniumConfig extends Config {
             text = "Show"        // text on the button itself
     )
     Runnable runnable = () -> {    // using a lambda to create the runnable interface.
-        Notifications.INSTANCE.send("Titanium Rewrite", "Your Current OS is " + Titaniumod.os);
+        Notifications.INSTANCE.send("Titanium Rewrite", "Your Current OS is " + Titaniumod.osinfo);
     };
 
     @Dropdown(
@@ -148,31 +148,31 @@ public class TitaniumConfig extends Config {
             name = "CPU Temps",
             category = "HUD"
     )
-    public CPUTemps hud = new CPUTemps();
+    public transient CPUTemps hud = new CPUTemps();
 
     @HUD(
             name = "GPU Temps",
             category = "HUD"
     )
-    public GPUTemps hud2 = new GPUTemps();
+    public transient GPUTemps hud2 = new GPUTemps();
 
 /*  @HUD(
             name = "GPU Vram",
             category = "HUD"
     )
-    public GPUVram hud3 = new GPUVram();*/
+    public transient GPUVram hud3 = new GPUVram();*/
 
     @HUD(
             name = "RAM Usage",
             category = "HUD"
     )
-    public RAMUsage hud4 = new RAMUsage();
+    public transient RAMUsage hud4 = new RAMUsage();
 
     @HUD(
             name = "Battery Percent",
             category = "HUD"
     )
-    public BatteryLife hud5 = new BatteryLife();
+    public transient BatteryLife hud5 = new BatteryLife();
 
     /// /////////////////////////////////////////CMD////////////////////////////////////////
 
