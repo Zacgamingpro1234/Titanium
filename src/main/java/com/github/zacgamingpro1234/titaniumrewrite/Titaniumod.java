@@ -186,9 +186,11 @@ public class Titaniumod {
 
         try {
             ProcessBuilder processBuilder = new ProcessBuilder("cmd", "/c", "wmic process where ProcessId=" + processID + " call setpriority " + Priority);
-            processBuilder.start();
+            Process process = processBuilder.start();
+            Notifications.INSTANCE.send("Titanium Rewrite", "Please Wait, Priority Applied Soon");
+            process.waitFor();
             Notifications.INSTANCE.send("Titanium Rewrite", "Priority "+Priority+" applied to ProcessID "+processID);
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException e) {
             LOGGER.error(e);
         }
     }
@@ -202,6 +204,7 @@ public class Titaniumod {
                 ProcessBuilder processBuilder = new ProcessBuilder("cmd", "/c", "powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61 717AD10b-71F4-4A5E-171F-4A5E71F4A5E1");
                 ProcessBuilder processBuilder2 = new ProcessBuilder("cmd", "/c", "powercfg -S 717AD10b-71F4-4A5E-171F-4A5E71F4A5E1");
                 Process process = processBuilder.start();
+                Notifications.INSTANCE.send("Titanium Rewrite", "Please Wait, Powerplan Applied Soon");
                 process.waitFor();
                 Process process2 = processBuilder2.start();
                 process2.waitFor();
