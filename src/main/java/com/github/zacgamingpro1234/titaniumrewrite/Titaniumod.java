@@ -8,9 +8,10 @@ import com.github.zacgamingpro1234.titaniumrewrite.config.TitaniumConfig;
 import io.github.pandalxb.jlibrehardwaremonitor.util.OSDetector;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
-import java.io.*;
 import static com.github.zacgamingpro1234.titaniumrewrite.SharedResources.*;
 
 import static com.github.zacgamingpro1234.titaniumrewrite.config.TitaniumConfig.PowerplanDefault;
