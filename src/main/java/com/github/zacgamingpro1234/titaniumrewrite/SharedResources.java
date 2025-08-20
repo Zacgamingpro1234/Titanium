@@ -6,7 +6,7 @@ import io.github.pandalxb.jlibrehardwaremonitor.config.ComputerConfig;
 import io.github.pandalxb.jlibrehardwaremonitor.manager.LibreHardwareManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-//import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL11;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -30,11 +30,22 @@ public class SharedResources {
     public static final Logger LOGGER = LogManager.getLogger("titaniumrewrite");
     public static final Icon BATTERY_ICON = new Icon("/Assets/battery-warning.svg");
     public static final Icon RAM_ICON = new Icon("/Assets/memory-stick.svg");
-    //    public static final String MainGPU = GL11.glGetString(GL11.GL_RENDERER);
+    public static final String MainGPU = GL11.glGetString(GL11.GL_RENDERER);
+    public static final String MainVendor = GL11.glGetString(GL11.GL_VENDOR);
     public volatile static AtomicInteger amt = new AtomicInteger(0);
     public static CountDownLatch tempUpdateLatch;
 
     public static void executorrepeat() {
+        if (selgpu == 3){
+            String lower = (MainGPU + " " + MainVendor).toLowerCase();
+            if (lower.contains("nvidia")) {
+                selgpu = 2;
+            } else if (lower.contains("amd") || lower.contains("ati")) {
+                selgpu = 1;
+            } else if (lower.contains("intel")) {
+                selgpu = 0;
+            }
+        }
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         Runtime.getRuntime().addShutdownHook(new Thread(executor::shutdown));
         executor.scheduleAtFixedRate(() -> {
@@ -99,8 +110,6 @@ public class SharedResources {
                     try {
                         boolean updated = tempUpdateLatch.await(5, TimeUnit.SECONDS);
                         if (updated && RAMLeftLimit >= (MemoryFree*1024)) {
-                            LOGGER.warn(RAMLeftLimit);
-                            LOGGER.warn(MemoryFree);
                             Notifications.INSTANCE.send("Titanium Rewrite",
                                     "You Have " + String.format(("%." + idk + "f"), MemoryFree * divisor) + numstring +
                                             " Of RAM Left, please close background apps", RAM_ICON, 10000);

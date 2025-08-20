@@ -20,8 +20,8 @@ public class RAMUsage extends SingleTextHud {
     transient public static volatile double MemoryFree;
     transient public static volatile double MemoryUsed;
     transient public static volatile double RAMTotalfr; // RAM Total either GB or MB (changed at runtime)
-    transient public static volatile String numstring = "GB";
-    transient public static volatile String RAMstring = "N/A";
+    transient public static volatile String numstring = "MB";
+    transient public static volatile String RAMstring = "Loading";
     transient public static volatile double divisor;
     transient private static int ignticks;
     transient private static volatile boolean running = false;

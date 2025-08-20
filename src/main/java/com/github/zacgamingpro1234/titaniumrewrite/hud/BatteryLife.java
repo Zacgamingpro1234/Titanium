@@ -14,7 +14,7 @@ import static com.github.zacgamingpro1234.titaniumrewrite.SharedResources.*;
 
 public class BatteryLife extends SingleTextHud {
     transient public static volatile double percent = Double.NaN;
-    transient public static volatile String percentString = "N/A";
+    transient public static volatile String percentString = "Loading";
     transient public static volatile boolean charging;
     transient private static volatile List<Sensor> sensorslvl;
     transient private static volatile List<Sensor> sensorspwr;

@@ -24,7 +24,8 @@ public class Titaniumod {
     public static Boolean Enableable = false;
     public TitaniumConfig config;
     public static final boolean isWindows = OSDetector.isWindows();
-    public static String osinfo = "maybe";
+    public static final String osinfo = String.format("%s %s", System.getProperty("os.name")
+            , System.getProperty("os.arch")) ;
 
     /// /////////////////////////////////////////MISC////////////////////////////////////////
     @Mod.EventHandler

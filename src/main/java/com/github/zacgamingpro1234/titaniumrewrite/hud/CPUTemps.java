@@ -14,7 +14,7 @@ import static com.github.zacgamingpro1234.titaniumrewrite.SharedResources.*;
 
 public class CPUTemps extends SingleTextHud {
     transient public static volatile double tempCPU = Double.NaN;
-    transient private static volatile String cpuTempString = "N/A";
+    transient private static volatile String cpuTempString = "Loading";
     transient private static volatile List<Sensor> sensors;
     transient private static int ignticks;
     transient private static volatile boolean running = false;

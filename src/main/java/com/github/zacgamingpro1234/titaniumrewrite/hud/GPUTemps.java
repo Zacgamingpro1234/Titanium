@@ -15,7 +15,7 @@ import static com.github.zacgamingpro1234.titaniumrewrite.SharedResources.*;
 
 public class GPUTemps extends SingleTextHud {
     transient public static volatile double tempGPU = Double.NaN;
-    transient private static volatile String tempstring = "N/A";
+    transient private static volatile String tempstring = "Loading";
     transient private static volatile List<Sensor> sensors;
     transient private static int ignticks;
     transient private static volatile String hardtype = "Gpu";
