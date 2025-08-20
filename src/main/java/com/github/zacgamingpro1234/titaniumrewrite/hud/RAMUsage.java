@@ -24,6 +24,7 @@ public class RAMUsage extends SingleTextHud {
     transient public static volatile String RAMstring = "N/A";
     transient public static volatile double divisor;
     transient private static int ignticks;
+    transient private static volatile boolean running = false;
 
     @Dropdown(
             name = "Select Unit",
@@ -78,8 +79,9 @@ public class RAMUsage extends SingleTextHud {
     }
 
     public static void UpdRAMamt(boolean forced) {
-        if (forced || ignticks > waitick) {
+        if ((forced || ignticks > waitick) && !running) {
             try {
+                running = true;
                 if (!forced) ignticks = 0;
                 ThreadManager.execute(() -> {
                     try {
@@ -88,9 +90,8 @@ public class RAMUsage extends SingleTextHud {
                                 .filter(s -> "Memory Available".equals(s.getName()))
                                 .findFirst();
                         MemoryLeftSensor.ifPresent(sensor -> MemoryFree = sensor.getValue());
-                        divisor = Math.pow(1024.0, num);
+                        divisor = Math.pow(1024, num);
                         RAMTotalfr = RAMTotal * divisor;
-
                         if (num == 1) {
                             numstring = "MB";
                         } else {
@@ -129,6 +130,7 @@ public class RAMUsage extends SingleTextHud {
                     } catch (Exception e) {
                         LOGGER.warn(e);
                     }
+                    running = false;
                 });
             } catch (Exception e) {
                 LOGGER.warn(e);

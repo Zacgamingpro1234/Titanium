@@ -17,6 +17,7 @@ public class CPUTemps extends SingleTextHud {
     transient private static volatile String cpuTempString = "N/A";
     transient private static volatile List<Sensor> sensors;
     transient private static int ignticks;
+    transient private static volatile boolean running = false;
 
     @Number(
             name = "Decimal Accuracy",    // name of the component
@@ -39,8 +40,9 @@ public class CPUTemps extends SingleTextHud {
     volatile float num2 = 85; // default value
 
     public static void UpdTempCPU(boolean forced) {
-        if (forced || ignticks > waitick) {
+        if ((forced || ignticks > waitick) && !running) {
             try {
+                running = true;
                 if (!forced) ignticks = 0;
                 ThreadManager.execute(() -> {
                     try {
@@ -54,6 +56,7 @@ public class CPUTemps extends SingleTextHud {
                     } catch (Exception e) {
                         LOGGER.warn(e);
                     }
+                    running = false;
                 });
             } catch (Exception e) {
                 LOGGER.warn(e);
@@ -76,17 +79,11 @@ public class CPUTemps extends SingleTextHud {
 
     @Override
     protected void drawLine(String line, float x, float y, float scale) {
-        ThreadManager.execute(() -> {
             if (!Double.isNaN(tempCPU)) {
-                if (tempCPU >= num2) {
-                    color = Hclr;
-                } else {
-                    color = Dclr;
-                }
+                color = (tempCPU >= num2) ? Hclr : Dclr;
             } else {
                 color = Dclr;
             }
-        });
         TextRenderer.drawScaledString(line, x, y, color.getRGB(), TextRenderer.TextType.toType(textType), scale);
     }
 }

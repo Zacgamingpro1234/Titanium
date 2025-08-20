@@ -19,6 +19,7 @@ public class BatteryLife extends SingleTextHud {
     transient private static volatile List<Sensor> sensorslvl;
     transient private static volatile List<Sensor> sensorspwr;
     transient private static int ignticks;
+    transient private static volatile boolean running = false;
 
     @Number(
             name = "Decimal Accuracy",    // name of the component
@@ -49,8 +50,9 @@ public class BatteryLife extends SingleTextHud {
     volatile float num2 = 15; // default value
 
     public static void UpdLife(boolean forced) {
-        if (forced || ignticks > waitick) {
+        if ((forced || ignticks > waitick) && !running) {
             try {
+                running = true;
                 if (!forced) ignticks = 0;
                 ThreadManager.execute(() -> {
                     try {
@@ -74,6 +76,7 @@ public class BatteryLife extends SingleTextHud {
                     } catch (Exception e) {
                         LOGGER.warn(e);
                     }
+                    running = false;
                 });
             } catch (Exception e) {
                 LOGGER.warn(e);
@@ -96,7 +99,6 @@ public class BatteryLife extends SingleTextHud {
 
     @Override
     protected void drawLine(String line, float x, float y, float scale) {
-        ThreadManager.execute(() -> {
             if (!Double.isNaN(percent)) {
                 if (percent >= 100) {
                     color = FCclr;
@@ -110,7 +112,6 @@ public class BatteryLife extends SingleTextHud {
             } else {
                 color = Dclr;
             }
-        });
         TextRenderer.drawScaledString(line, x, y, color.getRGB(), TextRenderer.TextType.toType(textType), scale);
     }
 }

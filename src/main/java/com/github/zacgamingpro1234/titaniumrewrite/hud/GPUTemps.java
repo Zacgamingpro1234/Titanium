@@ -19,6 +19,7 @@ public class GPUTemps extends SingleTextHud {
     transient private static volatile List<Sensor> sensors;
     transient private static int ignticks;
     transient private static volatile String hardtype = "Gpu";
+    transient private static volatile boolean running = false;
 
     @Number(
             name = "Decimal Accuracy",    // name of the component
@@ -47,8 +48,9 @@ public class GPUTemps extends SingleTextHud {
     public static volatile int selgpu = 3;        // default option (here "Another Option")
 
     public static void UpdTempGPU(boolean forced) {
-        if (forced || ignticks > waitick) {
+        if ((forced || ignticks > waitick) && !running) {
             try {
+                running = true;
                 if (!forced) ignticks = 0;
                 ThreadManager.execute(() -> {
                     try {
@@ -72,6 +74,7 @@ public class GPUTemps extends SingleTextHud {
                     } catch (Exception e) {
                         LOGGER.warn(e);
                     }
+                    running = false;
                 });
             } catch (Exception e) {
                 LOGGER.warn(e);
@@ -94,17 +97,11 @@ public class GPUTemps extends SingleTextHud {
 
     @Override
     protected void drawLine(String line, float x, float y, float scale) {
-        ThreadManager.execute(() -> {
             if (!Double.isNaN(tempGPU)) {
-                if (tempGPU >= num2) {
-                    color = Hclr;
-                } else {
-                    color = Dclr;
-                }
+                color = (tempGPU >= num2) ? Hclr : Dclr;
             } else {
                 color = Dclr;
             }
-        });
         TextRenderer.drawScaledString(line, x, y, color.getRGB(), TextRenderer.TextType.toType(textType), scale);
     }
 }

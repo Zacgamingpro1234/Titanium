@@ -12,6 +12,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+
 import static com.github.zacgamingpro1234.titaniumrewrite.config.TitaniumConfig.*;
 import static com.github.zacgamingpro1234.titaniumrewrite.hud.BatteryLife.*;
 import static com.github.zacgamingpro1234.titaniumrewrite.hud.CPUTemps.*;
@@ -29,7 +30,7 @@ public class SharedResources {
     public static final Logger LOGGER = LogManager.getLogger("titaniumrewrite");
     public static final Icon BATTERY_ICON = new Icon("/Assets/battery-warning.svg");
     public static final Icon RAM_ICON = new Icon("/Assets/memory-stick.svg");
-//    public static final String MainGPU = GL11.glGetString(GL11.GL_RENDERER);
+    //    public static final String MainGPU = GL11.glGetString(GL11.GL_RENDERER);
     public volatile static AtomicInteger amt = new AtomicInteger(0);
     public static CountDownLatch tempUpdateLatch;
 
@@ -43,9 +44,10 @@ public class SharedResources {
             if (Batterywarn) amt.incrementAndGet();
             if (RAMwarn) amt.incrementAndGet();
             tempUpdateLatch = new CountDownLatch(amt.get());
-            ThreadManager.execute(() -> {
-                if (CPUwarn) {
-                    UpdTempCPU(true);
+
+            if (CPUwarn) {
+                UpdTempCPU(true);
+                ThreadManager.execute(() -> {
                     try {
                         boolean updated = tempUpdateLatch.await(5, TimeUnit.SECONDS);
                         if ((updated || !Double.isNaN(tempCPU)) && tempCPU >= templimitCPU) {
@@ -56,12 +58,12 @@ public class SharedResources {
                     } catch (InterruptedException e) {
                         LOGGER.warn(e);
                     }
-                }
-            });
+                });
+            }
 
-            ThreadManager.execute(() -> {
-                if (GPUwarn) {
-                    UpdTempGPU(true);
+            if (GPUwarn) {
+                UpdTempGPU(true);
+                ThreadManager.execute(() -> {
                     try {
                         boolean updated = tempUpdateLatch.await(5, TimeUnit.SECONDS);
                         if ((updated || !Double.isNaN(tempGPU)) && tempGPU >= templimitGPU) {
@@ -72,12 +74,12 @@ public class SharedResources {
                     } catch (InterruptedException e) {
                         LOGGER.warn(e);
                     }
-                }
-            });
+                });
+            }
 
-            ThreadManager.execute(() -> {
-                if (Batterywarn) {
-                    UpdLife(true);
+            if (Batterywarn) {
+                UpdLife(true);
+                ThreadManager.execute(() -> {
                     try {
                         boolean updated = tempUpdateLatch.await(5, TimeUnit.SECONDS);
                         if ((updated || !Double.isNaN(percent)) && percent <= percentMinimum && !charging) {
@@ -88,15 +90,17 @@ public class SharedResources {
                     } catch (InterruptedException e) {
                         LOGGER.warn(e);
                     }
-                }
-            });
+                });
+            }
 
-            ThreadManager.execute(() -> {
-                if (RAMwarn) {
-                    UpdRAMamt(true);
+            if (RAMwarn) {
+                UpdRAMamt(true);
+                ThreadManager.execute(() -> {
                     try {
                         boolean updated = tempUpdateLatch.await(5, TimeUnit.SECONDS);
-                        if (updated && RAMLeftLimit <= MemoryFree) {
+                        if (updated && RAMLeftLimit >= (MemoryFree*1024)) {
+                            LOGGER.warn(RAMLeftLimit);
+                            LOGGER.warn(MemoryFree);
                             Notifications.INSTANCE.send("Titanium Rewrite",
                                     "You Have " + String.format(("%." + idk + "f"), MemoryFree * divisor) + numstring +
                                             " Of RAM Left, please close background apps", RAM_ICON, 10000);
@@ -104,8 +108,9 @@ public class SharedResources {
                     } catch (InterruptedException e) {
                         LOGGER.warn(e);
                     }
-                }
-            });
+
+                });
+            }
         }, 0, 60, TimeUnit.SECONDS);
     }
 }
