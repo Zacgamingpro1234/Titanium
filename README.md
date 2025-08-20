@@ -1,11 +1,12 @@
 # Titanium
 A mod that optimizes stuff outside of Minecraft. With this mod you can enable the Ultimate Powerplan, Increase Game Priority, Warn If You Are Low On System Resources and View HUDs about your systems resources such as CPU/GPU Temps and RAM Usage.
 
-[![GitHub Badge](https://badger-api-staging.worldwidepixel.ca/cozy?gradientStart=057D00&gradientEnd=043000&lineOne=Also%20On&lineTwo=Modrinth!&colourOne=E8E8E8&colourTwo=FFFFFF&iconUrl=https://create-garnished.github.io/images/addons/launcher/modrinth.png)](https://modrinth.com/mod/titaniumod)
+[![Modrinth Badge](https://badger-api-staging.worldwidepixel.ca/cozy?gradientStart=057D00&gradientEnd=043000&lineOne=Also%20On&lineTwo=Modrinth!&colourOne=E8E8E8&colourTwo=FFFFFF&iconUrl=https://create-garnished.github.io/images/addons/launcher/modrinth.png)](https://modrinth.com/mod/titaniumod)
 [![GitHub Badge](https://badger-api-staging.worldwidepixel.ca/cozy?gradientStart=181F29&gradientEnd=0F131A&lineOne=Also%20On&lineTwo=Github!&colourOne=E8E8E8&colourTwo=FFFFFF&iconUrl=https://raw.githubusercontent.com/rdimascio/icons/master/icons/light/github.svg)](https://github.com/Zacgamingpro1234/Titanium)
+[![OneConfig Badge](https://www.polyfrost.org/media/branding/badges/badge_1.svg)](https://modrinth.com/mod/oneconfig)
 
 ### Compatibility
-This mod is only tested on Windows 11, but it should work on most Windows 10 systems. Compatibility between other OSes such as macOS or Linux are not confirmed. Checks have been made to disable certain features that will most likely not work.
+This mod is only tested on Windows 11, but it should work on most Windows 10 systems. Compatibility between other OSes such as macOS or Linux are not confirmed. Checks have been made to disable certain features that will most likely not work. Though you can bypass these by enabling an option in the config.
 
 ## Libraries Used
 - [jLibreHardwareMonitor](https://github.com/pandalxb/jLibreHardwareMonitor) – [Apache-2.0](https://github.com/pandalxb/jLibreHardwareMonitor?tab=Apache-2.0-1-ov-file#readme)  
