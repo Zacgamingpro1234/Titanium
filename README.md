@@ -12,7 +12,7 @@ This mod is only tested on Windows 11, but it should work on most Windows 10 sys
 - [jLibreHardwareMonitor](https://github.com/pandalxb/jLibreHardwareMonitor) – [Apache-2.0](https://github.com/pandalxb/jLibreHardwareMonitor?tab=Apache-2.0-1-ov-file#readme)  
 - [jPowerShell](https://github.com/pandalxb/jPowerShell) – [Apache-2.0](https://github.com/pandalxb/jPowerShell?tab=Apache-2.0-1-ov-file#readme)  
 - [OneConfig v0](https://github.com/Polyfrost/OneConfig/tree/develop-v0) – [GNU Lesser General Public License v3.0 (with additional terms)](https://github.com/Polyfrost/OneConfig/blob/develop-v0/LICENSE)  
-- [Lucide.dev](https://lucide.dev/) - [Lucide License](https://lucide.dev/license)
+- [Lucide.dev](https://lucide.dev/) – [Lucide License](https://lucide.dev/license)
 
 ## Licensing
 The original code written by Zacgamingpro1234 and other contributors is released under the [MIT License](https://github.com/Zacgamingpro1234/Titanium/tree/main?tab=MIT-1-ov-file). All bundled libraries and external tools retain their respective licenses. Where required, proper attribution and compliance with their terms are ensured.
