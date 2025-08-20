@@ -37,10 +37,6 @@ public class Titaniumod {
                 launchVerifiedDown(); //Continue With The Code
             }
         })); //Run launchVerifiedDown When The Game Closes
-        BufferedWriter writer = new BufferedWriter(new FileWriter("mod_config.log", true));
-        writer.write("Is Windows: " + osinfo);
-        writer.newLine();
-        writer.close();
         EventManager.INSTANCE.register(this); //Registers Us To The EventBus
     }
 
@@ -55,15 +51,7 @@ public class Titaniumod {
     }
 
     private void launchVerifiedUp() { //Run On Startup
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("mod_config.log", true))) {
-            writer.write("Launch CMD-UP: " + TitaniumConfig.lCMDtUP);
-            writer.newLine();
-            writer.write("Launch PS-UP: " + TitaniumConfig.lPStUP);
-            writer.newLine();
-            launchPrioritySetter();
-        } catch (IOException e) {
-            LOGGER.error(e);
-        }
+        launchPrioritySetter();
         try {
             // Run PowerShell command to get active GUID
             ProcessBuilder pb = new ProcessBuilder(
@@ -97,17 +85,6 @@ public class Titaniumod {
     }
 
     private void launchVerifiedDown() { //Run On Shutdown
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("mod_config.log", true))) {
-            writer.write("Verified Shutdown: true");
-            writer.newLine();
-            writer.write("Launch CMD-DOWN: " + TitaniumConfig.lCMDtDOWN);
-            writer.newLine();
-            writer.write("Launch PS-DOWN: " + TitaniumConfig.lPStDOWN);
-            writer.newLine();
-        } catch (IOException e) {
-            LOGGER.error(e);
-        }
-
         if (TitaniumConfig.lPStDOWN) {
             launchPSDown();
         }
@@ -119,10 +96,7 @@ public class Titaniumod {
     /// /////////////////////////////////////////LAUNCH CMD STARTUP////////////////////////////////////////
 
     private void launchCMDUP() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("mod_config.log", true))) {
-            writer.write("Run As Admin CMD Startup: " + TitaniumConfig.RAACMDUP);
-            writer.newLine();
-
+        try {
             ProcessBuilder processBuilder;
             if (TitaniumConfig.RAACMDUP) {
                 processBuilder = new ProcessBuilder("cmd", "/c", "powershell", "-Command",
@@ -130,7 +104,6 @@ public class Titaniumod {
             } else {
                 processBuilder = new ProcessBuilder("cmd", "/c", "start", "cmd.exe", "/K", "cd", "\\");
             }
-
             processBuilder.start();
         } catch (IOException e) {
             LOGGER.error(e);
@@ -140,10 +113,7 @@ public class Titaniumod {
     /// /////////////////////////////////////////LAUNCH CMD SHUTDOWN////////////////////////////////////////
 
     private void launchCMDDown() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("mod_config.log", true))) {
-            writer.write("Run As Admin CMD Shutdown: " + TitaniumConfig.RAACMDDOWN);
-            writer.newLine();
-
+        try {
             ProcessBuilder processBuilder;
             if (TitaniumConfig.RAACMDDOWN) {
                 processBuilder = new ProcessBuilder("cmd", "/c", "powershell", "-Command",
@@ -151,7 +121,6 @@ public class Titaniumod {
             } else {
                 processBuilder = new ProcessBuilder("cmd", "/c", "start", "cmd.exe", "/K", "cd", "\\");
             }
-
             processBuilder.start();
         } catch (IOException e) {
             LOGGER.error(e);
@@ -161,17 +130,13 @@ public class Titaniumod {
     /// /////////////////////////////////////////LAUNCH POWERSHELL STARTUP////////////////////////////////////////
 
     private void launchPSUP() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("mod_config.log", true))) {
-            writer.write("Run As Admin PowerShell Startup: " + TitaniumConfig.RAAPSUP);
-            writer.newLine();
+        try {
             ProcessBuilder processBuilder;
-
             if (TitaniumConfig.RAAPSUP) {
                 processBuilder = new ProcessBuilder("powershell", "-Command", "Start-Process", "powershell", "-ArgumentList", "\"-NoExit -Command Set-Location -Path", "'C:\\'\"", "-Verb", "RunAs");
             } else {
                 processBuilder = new ProcessBuilder("cmd", "/c", "start", "powershell.exe", "-NoExit", "-Command", "Set-Location -Path '" + "C:\\" + "'");
             }
-
             processBuilder.start();
         } catch (IOException e) {
             LOGGER.error(e);
@@ -181,17 +146,13 @@ public class Titaniumod {
     /// /////////////////////////////////////////LAUNCH POWERSHELL SHUTDOWN////////////////////////////////////////
 
     private void launchPSDown() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("mod_config.log", true))) {
-            writer.write("Run As Admin PowerShell Shutdown: " + TitaniumConfig.RAAPSDOWN);
-            writer.newLine();
+        try {
             ProcessBuilder processBuilder;
-
             if (TitaniumConfig.RAAPSDOWN) {
                 processBuilder = new ProcessBuilder("powershell", "-Command", "Start-Process", "powershell", "-ArgumentList", "\"-NoExit -Command Set-Location -Path", "'C:\\'\"", "-Verb", "RunAs");
             } else {
                 processBuilder = new ProcessBuilder("cmd", "/c", "start", "powershell.exe", "-NoExit", "-Command", "Set-Location -Path '" + "C:\\" + "'");
             }
-
             processBuilder.start();
         } catch (IOException e) {
             LOGGER.error(e);
@@ -221,9 +182,7 @@ public class Titaniumod {
                 Priority = 32;       // Fallback to Normal
         }
 
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("mod_config.log", true))) {
-            writer.write("ProcessID: " + processID + ", Setting priority to: " + Priority);
-            writer.newLine();
+        try {
             ProcessBuilder processBuilder = new ProcessBuilder("cmd", "/c", "wmic process where ProcessId=" + processID + " call setpriority " + Priority);
             processBuilder.start();
             Notifications.INSTANCE.send("Titanium Rewrite", "Priority "+Priority+" applied to ProcessID "+processID);
@@ -237,9 +196,7 @@ public class Titaniumod {
     public static void enableultPwrPln() {
         Enableable = false;
         new Thread(() -> {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter("mod_config.log", true))) {
-                writer.write("Powerplan Creation");
-                writer.newLine();
+            try {
                 ProcessBuilder processBuilder = new ProcessBuilder("cmd", "/c", "powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61 717AD10b-71F4-4A5E-171F-4A5E71F4A5E1");
                 ProcessBuilder processBuilder2 = new ProcessBuilder("cmd", "/c", "powercfg -S 717AD10b-71F4-4A5E-171F-4A5E71F4A5E1");
                 Process process = processBuilder.start();
@@ -256,9 +213,7 @@ public class Titaniumod {
     public static void revertpwrpln() {
         Enableable = true;
         new Thread(() -> {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter("mod_config.log", true))) {
-                writer.write(PowerplanDefault);
-                writer.newLine();
+            try {
                 ProcessBuilder processBuilder = new ProcessBuilder("cmd", "/c", "powercfg -S " + PowerplanDefault);
                 ProcessBuilder processBuilder2 = new ProcessBuilder("cmd", "/c", "powercfg -D 717AD10b-71F4-4A5E-171F-4A5E71F4A5E1");
                 Process process = processBuilder.start();
