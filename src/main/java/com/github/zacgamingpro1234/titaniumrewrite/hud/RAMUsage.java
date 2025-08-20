@@ -16,14 +16,14 @@ import static com.github.zacgamingpro1234.titaniumrewrite.config.TitaniumConfig.
 import static com.github.zacgamingpro1234.titaniumrewrite.SharedResources.*;
 
 public class RAMUsage extends SingleTextHud {
-    public static double RAMTotal; // RAM Total in GB
-    public static volatile double MemoryFree;
-    public static volatile double MemoryUsed;
-    public static volatile double RAMTotalfr; // RAM Total either GB or MB (changed at runtime)
-    public static volatile String numstring = "GB";
-    public static volatile String RAMstring = "N/A";
-    public static volatile double divisor;
-    private static int ignticks;
+    transient public static double RAMTotal; // RAM Total in GB
+    transient public static volatile double MemoryFree;
+    transient public static volatile double MemoryUsed;
+    transient public static volatile double RAMTotalfr; // RAM Total either GB or MB (changed at runtime)
+    transient public static volatile String numstring = "GB";
+    transient public static volatile String RAMstring = "N/A";
+    transient public static volatile double divisor;
+    transient private static int ignticks;
 
     @Dropdown(
             name = "Select Unit",
@@ -32,17 +32,17 @@ public class RAMUsage extends SingleTextHud {
     static volatile int num = 1;
 
     @Color(name = "Default Color")
-    transient volatile OneColor Dclr = new OneColor(255, 255, 255);
+    volatile OneColor Dclr = new OneColor(255, 255, 255);
 
     @Color(name = "High Usage Color")
-    transient volatile OneColor Hclr = new OneColor(255, 0, 0, 255);
+    volatile OneColor Hclr = new OneColor(255, 0, 0, 255);
 
     @Number(
             name = "High Usage Amount (In MB)",
             min = 0f,
             max = 4096f
     )
-    transient volatile float num2;
+    volatile float num2;
 
     @Dropdown(
             name = "Select Styling",

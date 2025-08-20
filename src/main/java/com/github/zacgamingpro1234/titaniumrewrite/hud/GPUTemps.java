@@ -10,18 +10,15 @@ import com.github.zacgamingpro1234.titaniumrewrite.ThreadManager;
 import io.github.pandalxb.jlibrehardwaremonitor.model.Sensor;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import static com.github.zacgamingpro1234.titaniumrewrite.config.TitaniumConfig.*;
 import static com.github.zacgamingpro1234.titaniumrewrite.SharedResources.*;
 
 public class GPUTemps extends SingleTextHud {
-    public static volatile double tempGPU = Double.NaN;
-    private static volatile String tempstring = "N/A";
-    private static CountDownLatch PrivLatch = new CountDownLatch(1);
-    private static volatile List<Sensor> sensors;
-    private static int ignticks;
-    private static volatile String hardtype = "Gpu";
+    transient public static volatile double tempGPU = Double.NaN;
+    transient private static volatile String tempstring = "N/A";
+    transient private static volatile List<Sensor> sensors;
+    transient private static int ignticks;
+    transient private static volatile String hardtype = "Gpu";
 
     @Number(
             name = "Decimal Accuracy",    // name of the component
@@ -31,17 +28,17 @@ public class GPUTemps extends SingleTextHud {
     @Color(
             name = "Default Color"
     )
-    transient volatile OneColor Dclr = new OneColor(255, 255, 255);
+    volatile OneColor Dclr = new OneColor(255, 255, 255);
     @Color(
             name = "Hot Color"
     )
-    transient volatile OneColor Hclr = new OneColor(255, 0, 0, 255);
+    volatile OneColor Hclr = new OneColor(255, 0, 0, 255);
     @Number(
             name = "Hot Amount",    // name of the component
             min = 0f, max = 110f,        // min and max values (anything above/below is set to the max/min
             step = 5       // each time the arrow is clicked it will increase/decrease by this amount
     )
-    transient volatile float num2 = 85; // default value
+    volatile float num2 = 85; // default value
     @Dropdown(
             name = "Selected GPU",        // name of the component
             options = {"Intel GPU", "AMD GPU", "Nvidia GPU", "Random GPU (Fallback)"},
@@ -53,7 +50,6 @@ public class GPUTemps extends SingleTextHud {
         if (forced || ignticks > waitick) {
             try {
                 if (!forced) ignticks = 0;
-                PrivLatch = new CountDownLatch(1);
                 ThreadManager.execute(() -> {
                     try {
                         switch (selgpu) {
@@ -73,7 +69,6 @@ public class GPUTemps extends SingleTextHud {
                         coreSensor.ifPresent(sensor -> tempGPU = sensor.getValue());
                         tempstring = String.format(("%." + num + "f°C"), tempGPU);
                         tempUpdateLatch.countDown();
-                        PrivLatch.countDown();
                     } catch (Exception e) {
                         LOGGER.warn(e);
                     }
@@ -100,19 +95,14 @@ public class GPUTemps extends SingleTextHud {
     @Override
     protected void drawLine(String line, float x, float y, float scale) {
         ThreadManager.execute(() -> {
-            try {
-                boolean updated = PrivLatch.await(5, TimeUnit.SECONDS);
-                if ((updated || !Double.isNaN(tempGPU))) {
-                    if (tempGPU >= num2) {
-                        color = Hclr;
-                    } else {
-                        color = Dclr;
-                    }
+            if (!Double.isNaN(tempGPU)) {
+                if (tempGPU >= num2) {
+                    color = Hclr;
                 } else {
                     color = Dclr;
                 }
-            } catch (InterruptedException e) {
-                LOGGER.warn(e);
+            } else {
+                color = Dclr;
             }
         });
         TextRenderer.drawScaledString(line, x, y, color.getRGB(), TextRenderer.TextType.toType(textType), scale);

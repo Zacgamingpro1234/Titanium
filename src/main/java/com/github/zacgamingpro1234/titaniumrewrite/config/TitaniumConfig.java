@@ -148,31 +148,31 @@ public class TitaniumConfig extends Config {
             name = "CPU Temps",
             category = "HUD"
     )
-    public transient CPUTemps hud = new CPUTemps();
+    public CPUTemps hud = new CPUTemps();
 
     @HUD(
             name = "GPU Temps",
             category = "HUD"
     )
-    public transient GPUTemps hud2 = new GPUTemps();
+    public GPUTemps hud2 = new GPUTemps();
 
 /*  @HUD(
             name = "GPU Vram",
             category = "HUD"
     )
-    public transient GPUVram hud3 = new GPUVram();*/
+    public GPUVram hud3 = new GPUVram();*/
 
     @HUD(
             name = "RAM Usage",
             category = "HUD"
     )
-    public transient RAMUsage hud4 = new RAMUsage();
+    public RAMUsage hud4 = new RAMUsage();
 
     @HUD(
             name = "Battery Percent",
             category = "HUD"
     )
-    public transient BatteryLife hud5 = new BatteryLife();
+    public BatteryLife hud5 = new BatteryLife();
 
     /// /////////////////////////////////////////CMD////////////////////////////////////////
 

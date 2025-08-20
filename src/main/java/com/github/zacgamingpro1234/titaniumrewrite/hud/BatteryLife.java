@@ -9,19 +9,16 @@ import io.github.pandalxb.jlibrehardwaremonitor.model.Sensor;
 import cc.polyfrost.oneconfig.config.annotations.Number;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
 import static com.github.zacgamingpro1234.titaniumrewrite.config.TitaniumConfig.*;
 import static com.github.zacgamingpro1234.titaniumrewrite.SharedResources.*;
 
 public class BatteryLife extends SingleTextHud {
-    public static volatile double percent = Double.NaN;
-    public static volatile String percentString = "N/A";
-    public static volatile boolean charging;
-    private static CountDownLatch PrivLatch = new CountDownLatch(1);
-    private static volatile List<Sensor> sensorslvl;
-    private static volatile List<Sensor> sensorspwr;
-    private static int ignticks;
+    transient public static volatile double percent = Double.NaN;
+    transient public static volatile String percentString = "N/A";
+    transient public static volatile boolean charging;
+    transient private static volatile List<Sensor> sensorslvl;
+    transient private static volatile List<Sensor> sensorspwr;
+    transient private static int ignticks;
 
     @Number(
             name = "Decimal Accuracy",    // name of the component
@@ -31,31 +28,30 @@ public class BatteryLife extends SingleTextHud {
     @Color(
             name = "Discharging Color"
     )
-    transient volatile OneColor Dclr = new OneColor(255, 255, 255);
+    volatile OneColor Dclr = new OneColor(255, 255, 255);
     @Color(
             name = "Full Charge Color"
     )
-    transient volatile OneColor FCclr = new OneColor(0, 255, 0, 255);
+    volatile OneColor FCclr = new OneColor(0, 255, 0, 255);
     @Color(
             name = "Charging Color"
     )
-    transient volatile OneColor Cclr = new OneColor(0, 155, 0, 255);
+    volatile OneColor Cclr = new OneColor(0, 155, 0, 255);
     @Color(
             name = "Low Charge Color"
     )
-    transient volatile OneColor LCclr = new OneColor(155, 0, 0, 255);
+    volatile OneColor LCclr = new OneColor(155, 0, 0, 255);
     @Number(
             name = "Low Charge Amount",    // name of the component
             min = 0f, max = 99.9f,        // min and max values (anything above/below is set to the max/min
             step = 5       // each time the arrow is clicked it will increase/decrease by this amount
     )
-    transient volatile float num2 = 15; // default value
+    volatile float num2 = 15; // default value
 
     public static void UpdLife(boolean forced) {
         if (forced || ignticks > waitick) {
             try {
                 if (!forced) ignticks = 0;
-                PrivLatch = new CountDownLatch(1);
                 ThreadManager.execute(() -> {
                     try {
                         sensorslvl = libreHardwareManager.querySensors("Battery", "Level");
@@ -101,23 +97,18 @@ public class BatteryLife extends SingleTextHud {
     @Override
     protected void drawLine(String line, float x, float y, float scale) {
         ThreadManager.execute(() -> {
-            try {
-                boolean updated = PrivLatch.await(5, TimeUnit.SECONDS);
-                if ((updated || !Double.isNaN(percent))) {
-                    if (percent >= 100) {
-                        color = FCclr;
-                    } else if (charging) {
-                        color = Cclr;
-                    } else if (percent <= num2) {
-                        color = LCclr;
-                    } else {
-                        color = Dclr;
-                    }
+            if (!Double.isNaN(percent)) {
+                if (percent >= 100) {
+                    color = FCclr;
+                } else if (charging) {
+                    color = Cclr;
+                } else if (percent <= num2) {
+                    color = LCclr;
                 } else {
                     color = Dclr;
                 }
-            } catch (InterruptedException e) {
-                LOGGER.warn(e);
+            } else {
+                color = Dclr;
             }
         });
         TextRenderer.drawScaledString(line, x, y, color.getRGB(), TextRenderer.TextType.toType(textType), scale);
