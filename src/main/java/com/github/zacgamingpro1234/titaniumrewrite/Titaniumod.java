@@ -8,10 +8,12 @@ import com.github.zacgamingpro1234.titaniumrewrite.config.TitaniumConfig;
 import io.github.pandalxb.jlibrehardwaremonitor.util.OSDetector;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
+
 import static com.github.zacgamingpro1234.titaniumrewrite.SharedResources.*;
 
 import static com.github.zacgamingpro1234.titaniumrewrite.config.TitaniumConfig.PowerplanDefault;
@@ -25,7 +27,7 @@ public class Titaniumod {
     public TitaniumConfig config;
     public static final boolean isWindows = OSDetector.isWindows();
     public static final String osinfo = String.format("%s %s", System.getProperty("os.name")
-            , System.getProperty("os.arch")) ;
+            , System.getProperty("os.arch"));
 
     /// /////////////////////////////////////////MISC////////////////////////////////////////
     @Mod.EventHandler
@@ -68,7 +70,7 @@ public class Titaniumod {
                 String guid = reader.readLine().trim();
                 // Verify it's a valid GUID format
                 if (guid.matches("[0-9a-fA-F]{8}-(?:[0-9a-fA-F]{4}-){3}[0-9a-fA-F]{12}")) {
-                    if (!guid.equals("717AD10b-71F4-4A5E-171F-4A5E71F4A5E1")){
+                    if (!guid.equals("717AD10b-71F4-4A5E-171F-4A5E71F4A5E1")) {
                         PowerplanDefault = guid;
                         Enableable = true;
                     }
@@ -184,15 +186,17 @@ public class Titaniumod {
                 Priority = 32;       // Fallback to Normal
         }
 
-        try {
-            ProcessBuilder processBuilder = new ProcessBuilder("cmd", "/c", "wmic process where ProcessId=" + processID + " call setpriority " + Priority);
-            Process process = processBuilder.start();
-            Notifications.INSTANCE.send("Titanium Rewrite", "Please Wait, Priority Applied Soon");
-            process.waitFor();
-            Notifications.INSTANCE.send("Titanium Rewrite", "Priority "+Priority+" applied to ProcessID "+processID);
-        } catch (IOException | InterruptedException e) {
-            LOGGER.error(e);
-        }
+        new Thread(() -> {
+            try {
+                ProcessBuilder processBuilder = new ProcessBuilder("cmd", "/c", "wmic process where ProcessId=" + processID + " call setpriority " + Priority);
+                Process process = processBuilder.start();
+                Notifications.INSTANCE.send("Titanium Rewrite", "Please Wait, Priority Applied Soon");
+                process.waitFor();
+                Notifications.INSTANCE.send("Titanium Rewrite", "Priority " + Priority + " applied to ProcessID " + processID);
+            } catch (IOException | InterruptedException e) {
+                LOGGER.error(e);
+            }
+        }).start();
     }
 
     /// /////////////////////////////////////////CREATE & APPLY ULTIMATE POWERPLAN////////////////////////////////////////
@@ -233,7 +237,7 @@ public class Titaniumod {
 
     /// /////////////////////////////////////////LAUNCH CTwinUtil////////////////////////////////////////
 
-    public static void CTwinUtil(){
+    public static void CTwinUtil() {
         try {
             ProcessBuilder processBuilder = new ProcessBuilder("powershell", "-Command", "iwr -useb https://christitus.com/win | iex");
             processBuilder.start();
