@@ -8,6 +8,7 @@ import com.github.zacgamingpro1234.titaniumrewrite.config.TitaniumConfig;
 import io.github.pandalxb.jlibrehardwaremonitor.util.OSDetector;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,8 +16,7 @@ import java.io.InputStreamReader;
 import java.lang.management.ManagementFactory;
 
 import static com.github.zacgamingpro1234.titaniumrewrite.SharedResources.*;
-
-import static com.github.zacgamingpro1234.titaniumrewrite.config.TitaniumConfig.PowerplanDefault;
+import static com.github.zacgamingpro1234.titaniumrewrite.config.TitaniumConfig.*;
 
 @Mod(modid = Titaniumod.MODID, name = Titaniumod.NAME, version = Titaniumod.VERSION)
 public class Titaniumod {
@@ -26,12 +26,12 @@ public class Titaniumod {
     public static Boolean Enableable = false;
     public TitaniumConfig config;
     public static final boolean isWindows = OSDetector.isWindows();
-    public static final String osinfo = String.format("%s %s", System.getProperty("os.name")
-            , System.getProperty("os.arch"));
+    public static final String osinfo = String.format("%s %s", SystemUtils.OS_NAME
+            , SystemUtils.OS_ARCH);
 
     /// /////////////////////////////////////////MISC////////////////////////////////////////
     @Mod.EventHandler
-    public void init(FMLInitializationEvent event) throws IOException {
+    public void init(FMLInitializationEvent event) {
         config = new TitaniumConfig(); //Makes The Config Work In-Game
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
             ThreadManager.shutdown();
@@ -49,6 +49,9 @@ public class Titaniumod {
         executorrepeat();
         if (isWindows) { //If We Have Windows, Continue With The Code
             launchVerifiedUp();
+            if (setpwr) {
+                enableultPwrPln();
+            }
         } else if (TitaniumConfig.BypassOS) { //Bypass Enabled? Dw I got u
             launchVerifiedUp(); //Continue With The Code
         }
@@ -225,6 +228,7 @@ public class Titaniumod {
             try {
                 ProcessBuilder processBuilder = new ProcessBuilder("cmd", "/c", "powercfg -S " + PowerplanDefault);
                 ProcessBuilder processBuilder2 = new ProcessBuilder("cmd", "/c", "powercfg -D 717AD10b-71F4-4A5E-171F-4A5E71F4A5E1");
+                Notifications.INSTANCE.send("Titanium Rewrite", "Please Wait, Powerplan Disabled Soon");
                 Process process = processBuilder.start();
                 process.waitFor();
                 processBuilder2.start();

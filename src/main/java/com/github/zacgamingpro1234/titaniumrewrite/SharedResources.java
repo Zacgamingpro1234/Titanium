@@ -18,6 +18,7 @@ import static com.github.zacgamingpro1234.titaniumrewrite.hud.BatteryLife.*;
 import static com.github.zacgamingpro1234.titaniumrewrite.hud.CPUTemps.*;
 import static com.github.zacgamingpro1234.titaniumrewrite.hud.GPUTemps.*;
 import static com.github.zacgamingpro1234.titaniumrewrite.hud.RAMUsage.*;
+import static com.github.zacgamingpro1234.titaniumrewrite.Titaniumod.*;
 
 public class SharedResources {
     public static final LibreHardwareManager libreHardwareManager = LibreHardwareManager.createInstance(ComputerConfig.getInstance()
@@ -47,7 +48,12 @@ public class SharedResources {
             }
         }
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        Runtime.getRuntime().addShutdownHook(new Thread(executor::shutdown));
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            executor.shutdown();
+            if (setog) {
+                revertpwrpln();
+            }
+        }));
         executor.scheduleAtFixedRate(() -> {
             amt.set(0);
             if (CPUwarn) amt.incrementAndGet();

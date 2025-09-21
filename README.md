@@ -1,4 +1,5 @@
 # Titanium
+### Please note that currently there is a [false positive virus alert](https://github.com/LibreHardwareMonitor/LibreHardwareMonitor/issues/984)
 A mod that optimizes stuff outside of Minecraft. With this mod you can enable the Ultimate Powerplan, Increase Game Priority, Warn If You Are Low On System Resources and View HUDs about your systems resources such as CPU/GPU Temps and RAM Usage.
 
 [![GitHub Badge](https://badger-api-staging.worldwidepixel.ca/cozy?gradientStart=057D00&gradientEnd=043000&lineOne=Also%20On&lineTwo=Modrinth!&colourOne=E8E8E8&colourTwo=FFFFFF&iconUrl=https://create-garnished.github.io/images/addons/launcher/modrinth.png)](https://modrinth.com/mod/titaniumod)

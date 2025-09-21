@@ -58,6 +58,16 @@ public class TitaniumConfig extends Config {
     )
     Runnable runnable3 = Titaniumod::revertpwrpln;
 
+    @Switch(
+            name = "Create & Enable Ultimate Powerplan On Startup"
+    )
+    public static boolean setpwr = false;        // default option
+
+    @Switch(
+            name = "Revert back to your original Powerplan On Shutdown"
+    )
+    public static boolean setog = false;        // default option
+
     @Dropdown(
             name = "PowerPlan Selector",
             options = {"N/A 1", "N/A 2", "N/A 3", "N/A 4"},
