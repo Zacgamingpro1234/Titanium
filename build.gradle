@@ -1,0 +1,61 @@
+plugins {
+	id 'org.jetbrains.kotlin.jvm' version '2.4.20'
+	id 'fabric-loom' version '1.18-SNAPSHOT'
+	id 'ploceus' version '1.18-SNAPSHOT'
+}
+
+base {
+	archivesName = project.archives_base_name
+}
+version = "${project.version}+mc${project.minecraft_version}"
+group = project.maven_group
+
+repositories {
+	maven {
+		name "Polyfrost Releases"
+		url "https://repo.polyfrost.org/releases"
+	}
+	google()
+	maven {
+		name "Clover Releases"
+		url "https://maven.cloverclient.com/releases"
+		content { includeGroup("pl.tomgirl") }
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+
+	mappings ploceus.featherMappings(project.feather_build)
+
+	modImplementation "org.polyfrost.oneconfig:1.8.9-ornithe:1.2.3"
+
+	ploceus.dependOsl(project.osl_version)
+}
+
+processResources {
+	inputs.property 'version', version
+
+	filesMatching('fabric.mod.json') {
+		expand 'version': version
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.encoding = 'UTF-8'
+	it.options.release = 25
+}
+
+java {
+	sourceCompatibility = JavaVersion.VERSION_25
+	targetCompatibility = JavaVersion.VERSION_25
+
+	withSourcesJar()
+}
+
+jar {
+	from('LICENSE') {
+		rename { "${it}_${base.archivesName.get()}" }
+	}
+}
