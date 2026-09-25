@@ -1,7 +1,7 @@
 plugins {
-	id 'org.jetbrains.kotlin.jvm' version '2.4.20'
-	id 'fabric-loom' version '1.18-SNAPSHOT'
-	id 'ploceus' version '1.18-SNAPSHOT'
+	id 'java'
+	id 'fabric-loom' version '1.18.2'
+	id 'ploceus' version '1.18.1'
 }
 
 base {
@@ -23,13 +23,17 @@ repositories {
 	}
 }
 
+ploceus {
+	setIntermediaryGeneration(2)
+}
+
 dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	mappings ploceus.featherMappings(project.feather_build)
 
-	modImplementation "org.polyfrost.oneconfig:1.8.9-ornithe:1.2.3"
+	modImplementation "org.polyfrost.oneconfig:1.8.9-ornithe:1.2.7"
 
 	ploceus.dependOsl(project.osl_version)
 }
